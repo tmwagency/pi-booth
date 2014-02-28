@@ -1,4 +1,4 @@
-photobooth
+pi-booth
 ==========
 
-A Raspberry Pi powered photobooth
+A Raspberry Pi powered photobooth.
