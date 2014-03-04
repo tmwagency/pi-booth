@@ -14,9 +14,14 @@ def init_users(userfile_url):
 
     #print(users.keys())
 
+def return_users():
+    init_users(config.user_file_url)
+    return users
+
 
 def render_users():
-    for key in users.iterkeys():
+    init_users(config.user_file_url)
+    for key in sorted(users):
         print(key)
         for i in range(0,len(users[key])):
             print(" " + users[key][i][0])
@@ -42,7 +47,7 @@ def get_user_guid(input_var):
 # Do we want the user file to be pulled every time someone tries to use the photobooth?
 # TODO: Find out latency between a new user entering the building and the list getting updated
 
-init_users(config.user_file_url) #url as string
+#init_users(config.user_file_url) #url as string
 
 #create the view
 render_users()
