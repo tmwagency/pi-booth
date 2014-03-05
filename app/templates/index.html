@@ -1,14 +1,45 @@
 <html>
 <head>
+<style type="text/css">
+body {
+padding: 0;
+margin: 0;
+white-space: nowrap;
+width: 3200px;
+overflow: auto;
+}
+.column {
+float: left;
+min-width: 100px;
+margin-right: 1px;
+padding: 0;
+background: #ccc;
+list-style-type: none;
+}
+.key {
+font-weight: bold;
+padding: 4px 20px;
+background: #eee;
+}
+.row {
+padding: 4px 20px;
+border-top: 1px solid #fff;
+}
+</style>
 <title>{{title}}</title>
 <body>
-{% for key in users recursive %}
-	{{ key }}
-	{% for name in users[key] %}
-		{{ name }}
-	{% endfor %}
+
+
+{% for key, val in users.iteritems() %}
+	<ul class="column">
+		<li class="key">{{ key }}</li>
+		{% for name, value in val %}
+		<li class="row">{{ name }}</li>
+		{% endfor %}
+	</ul>
 {% endfor %}
-<br>
+
+
 
 </body>
 </html>

@@ -3,20 +3,22 @@ import sys
 from collections import defaultdict
 import config
 
-users = defaultdict(list)
+
 
 def init_users(userfile_url):
+    users = defaultdict(list)
     data = urllib2.urlopen(userfile_url)
 
     for line in data.readlines():
         id, username, _ = line.split(", ", 2)
         users[username[:1].lower()].append((username, id))
-
-    #print(users.keys())
+    return users
+        
+    
 
 def return_users():
-    init_users(config.user_file_url)
-    return sorted(users)
+    users = init_users(config.user_file_url)
+    return users
 
 
 def render_users():
