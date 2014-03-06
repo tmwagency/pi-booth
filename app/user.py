@@ -2,10 +2,19 @@ import urllib2
 import sys
 from collections import defaultdict
 import config
+import gaugette.rotary_encoder
+import gaugette.switch
 import Queue
+import time
 from threading import Thread
 
 q = Queue.Queue()
+
+A_PIN  = 7
+B_PIN  = 9
+SW_PIN = 8
+
+
 
 def init_users(q, userfile_url):
     users = defaultdict(list)
@@ -17,38 +26,27 @@ def init_users(q, userfile_url):
     q.put(users)
     print '---------------got users'
         
-    
-
 def return_users():
     thr = Thread(target=init_users, args=(q, config.user_file_url,))
     thr.start()
     thr.join()
     users = q.get()
-    # users = init_users(config.user_file_url)
     return users
 
+encoder = gaugette.rotary_encoder.RotaryEncoder.Worker(A_PIN, B_PIN)
+encoder.start()
+switch = gaugette.switch.Switch(SW_PIN)
+last_state = None
 
-def render_users():
-    init_users(config.user_file_url)
-    for key in sorted(users.iterkeys()):
-        print(key)
-        for name, value in users[key]:
-            print(" " + name)
+while 1:
+    delta = encoder.get_delta()
+    time.sleep(0.02)
+    if delta!=0:
+        print "rotate %d" % delta
 
-def request_user():
-    input_var = raw_input("Enter your username: ")
-    get_user_guid(input_var)
-    
-def get_user_guid(input_var):
-    input_var_key = input_var[:1].lower()
-    if input_var == 'c':
-        print 'exit'
-        sys.exit()
-    try:
-        guid = [s for s in users[input_var_key] if input_var in s][0][1]
-        print ("The guid for your username is: " + guid)
-    except IndexError:
-        print "Username not found, try again or type 'c' to cancel."
-        request_user()
+    sw_state = switch.get_state()
+    if sw_state != last_state:
+        print "switch %d" % sw_state
+        last_state = sw_state
 
-#render_users()
+
