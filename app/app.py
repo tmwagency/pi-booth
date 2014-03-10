@@ -21,6 +21,10 @@ last_state = None
 
 q = Queue.Queue()
 
+
+        
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
