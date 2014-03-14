@@ -1,0 +1,51 @@
+body {
+padding: 0;
+margin: 0;
+text-align: center;
+}
+
+.column {
+float: left;
+min-width: 100px;
+margin-right: 1px;
+padding: 0;
+background: #ccc;
+list-style-type: none;
+}
+.key {
+font-weight: bold;
+padding: 4px 20px;
+background: #eee;
+}
+.active {
+background: #00ccff;
+}
+.row {
+padding: 4px 20px;
+border-top: 1px solid #fff;
+}
+
+.log {
+float: left;
+width: 500px;
+}
+
+#takepic {
+width: 200px;
+height: 30px;
+padding: 15px;
+background: rgba(150,238,255,1);
+border: 5px solid rgba(246,246,246,1);
+margin: 0 auto 100px auto;
+}
+
+
+/* -------- Form Elements -------- */
+
+input[type=text],
+input[type=submit] {
+border: 5px solid rgba(246,246,246,1);
+background: rgba(255,255,255,1);
+padding: 15px;
+margin: 0 0 10px 0;
+}

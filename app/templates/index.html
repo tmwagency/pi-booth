@@ -2,79 +2,23 @@
 <html>
 <head>
 <style type="text/css">
-body {
-padding: 0;
-margin: 0;
-white-space: nowrap;
-width: 3200px;
-overflow: auto;
-}
-.column {
-float: left;
-min-width: 100px;
-margin-right: 1px;
-padding: 0;
-background: #ccc;
-list-style-type: none;
-}
-.key {
-font-weight: bold;
-padding: 4px 20px;
-background: #eee;
-}
-.active {
-background: #00ccff;
-}
-.row {
-padding: 4px 20px;
-border-top: 1px solid #fff;
-}
 
-.log {
-float: left;
-width: 500px;
-}
 </style>
     <title>{{title}}</title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-	var key = 0;
-            var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
-            socket.on('event', function(msg) {
-		
-		var myindex = parseInt(msg.count);
-		console.log(myindex);
-                $('#log').append('<p>Received #' + msg.count + ': ' + msg.data + '</p>');
-		
-		$('.column:eq('+myindex+')').find('.key').addClass('active');
-            });
-            $('form#emit').submit(function(event) {
-                socket.emit('my event', {data: $('#emit_data').val()});
-                return false;
-            });
-            $('form#broadcast').submit(function(event) {
-                socket.emit('my broadcast event', {data: $('#broadcast_data').val()});
-                return false;
-            });
-        });
-    </script>
-<body>
-    <div class="log">
-        <h2>Receive:</h2>
-        <div id="log"></div>
-    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
+    
+<body class="home">
 
-{% for key, val in users.iteritems() %}
-	<ul class="column">
-		<li class="key">{{ key }}</li>
-		{% for name, value in val %}
-		<li class="row">{{ name }}</li>
-		{% endfor %}
-	</ul>
-{% endfor %}
-
+    <form id="user_submit">
+        <input type="text" name="uname" id="uname_data">
+        <input type="submit" name="usubmit" id="usubmit">
+    </form>
+	
+    <div id="takepic">Take a photo</div>
+    <div id="log"></div>
 
 </body>
 </html>
