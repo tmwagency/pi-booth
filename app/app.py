@@ -31,6 +31,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 users = {}
+active_guid = 0
 
 @app.route('/')
 @app.route('/index')
@@ -53,7 +54,9 @@ def select_user(message):
     user = message['data']
     print user
     guid_response = get_user_guid(user)
-    emit('event', {'data': guid_response })
+    response_code = guid_response[0]
+    guid = guid_response[1]
+    emit('event', {'response': response_code, 'data': guid })
     
 @socketio.on('my event', namespace='/test')
 def test_function(message):
@@ -100,40 +103,21 @@ def return_users():
 
 def get_user_guid(input_var):
     input_var_key = input_var[:1].lower()
+    code = 0
     try:
         guid = [s for s in users[input_var_key] if input_var in s][0][1]
-        return guid
-        print ("The guid for your username is: " + guid)
+        code = 1
+        guid_response = code, guid
+        return guid_response
     except IndexError:
-        print "Username not found, try again or type 'c' to cancel."
-        return "err: " + input_var
+        code = 0
+        guid_response = code, input_var
+        return guid_response
 
 def user_not_found(input):
     emit('event', {'data': '404 ' + input})
 
 
-'''
-idle = 0
-idle_counter = 0
-idle = True
-
-while True:
-    time.sleep(0.01)
-    delta = encoder.get_delta()
-
-    if delta != 0:
-        print delta
-        idle_counter = 100
-        idle = False
-
-    elif not idle:
-        print "not idle"
-        if idle_counter > 0:
-            idle_counter -= 1
-        else:
-            print "idle"
-            idle = True
-'''
-
+        
 if __name__ == '__main__':
     socketio.run(app)

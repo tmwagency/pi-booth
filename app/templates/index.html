@@ -11,14 +11,17 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
     
 <body class="home">
+<div id="container">
+	<div id="content">
 
-    <form id="user_submit">
-        <input type="text" name="uname" id="uname_data">
-        <input type="submit" name="usubmit" id="usubmit">
-    </form>
-	
-    <div id="takepic">Take a photo</div>
-    <div id="log"></div>
-
+	    <form id="user_submit">
+	        <input type="text" name="uname" id="uname_data">
+	        <input type="submit" name="usubmit" id="usubmit">
+	    </form>
+		
+	    <div id="takepic"><div id="takepic-div">Take a photo</div></div>
+	    <div id="log"></div>
+	</div>
+</div>
 </body>
 </html>
