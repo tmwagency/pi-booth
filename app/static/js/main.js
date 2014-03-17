@@ -11,8 +11,8 @@ var key = 0;
 		
 	}
 	else if (msg.response == '1') {
-		$('#log').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Frame yourself using the camera preview, then press the button below to take a picture.</p>');
-		$('#takepic').fadeIn();
+		$('#log').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
+		$('#takepic').fadeIn(800);
 		$('#user_submit').hide();
 	}
 	

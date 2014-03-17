@@ -33,7 +33,7 @@ socketio = SocketIO(app)
 users = {}
 active_guid = 0
 
-preview_dims = '\'20,20,300,700\''
+dims = '\'282,20,460,558\''
 
 @app.route('/')
 @app.route('/index')
@@ -67,8 +67,8 @@ def test_function(message):
     print message['data']
     f = message['data']
     if f == 'takepic' and active_guid != 0:
-    	camera.preview(10000,preview_dims)
-        # camera.take_picture(active_guid)
+    	#camera.preview(10000,config.dims)
+        camera.take_picture(active_guid,config.dims)
     
 
 @socketio.on('connect', namespace='/test')
@@ -124,4 +124,4 @@ def get_user_guid(input_var):
 
         
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app,'0.0.0.0',80)
