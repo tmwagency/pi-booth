@@ -33,6 +33,8 @@ socketio = SocketIO(app)
 users = {}
 active_guid = 0
 
+preview_dims = '\'20,20,300,700\''
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -51,19 +53,22 @@ def test():
 
 @socketio.on('user', namespace='/test')
 def select_user(message):
-    user = message['data']
-    print user
-    guid_response = get_user_guid(user)
-    response_code = guid_response[0]
-    guid = guid_response[1]
-    emit('event', {'response': response_code, 'data': guid })
+	global active_guid
+	user = message['data']
+	print user
+	guid_response = get_user_guid(user)
+	response_code = guid_response[0]
+	active_guid = guid_response[1]
+	first_name = guid_response[2].split(" ")[0]
+	emit('event', {'response': response_code, 'data': active_guid, 'name': first_name })
     
 @socketio.on('my event', namespace='/test')
 def test_function(message):
     print message['data']
     f = message['data']
-    if f == 'takepic':
-        camera.take_picture(294)
+    if f == 'takepic' and active_guid != 0:
+    	camera.preview(10000,preview_dims)
+        # camera.take_picture(active_guid)
     
 
 @socketio.on('connect', namespace='/test')
@@ -89,10 +94,10 @@ def init_users(q, userfile_url):
     data = urllib2.urlopen(userfile_url)
 
     for line in data.readlines():
-        id, username, _ = line.split(", ", 2)
-        users[username[:1].lower()].append((username, id))     
+        id, username, fullname = line.split(", ")
+        users[username[:1].lower()].append((username, id, fullname.rstrip())) 
     q.put(users)
-    print '---------------got users'
+    print ':: Built user dict'
         
 def return_users():
     global users
@@ -106,17 +111,16 @@ def get_user_guid(input_var):
     code = 0
     try:
         guid = [s for s in users[input_var_key] if input_var in s][0][1]
+        if guid:
+        	full_name = [s for s in users[input_var_key] if input_var in s][0][2]
         code = 1
-        guid_response = code, guid
+        guid_response = code, guid, full_name
         return guid_response
     except IndexError:
         code = 0
-        guid_response = code, input_var
+        guid_response = code, input_var, '0'
+        
         return guid_response
-
-def user_not_found(input):
-    emit('event', {'data': '404 ' + input})
-
 
         
 if __name__ == '__main__':

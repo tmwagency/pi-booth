@@ -1,7 +1,8 @@
 import sys, os, time
 
-
-
+def preview(time,dims):
+print "Previewing image"
+	os.system("raspistill -t " + str(time) + " -p " + dims)
 
 def take_picture(uid):
         image_count = 1
@@ -14,14 +15,13 @@ def take_picture(uid):
 	print("uid:" + str(uid))
 
 def send_picture(uid,filename):
-	os.system("curl -s -L -u tmwcolin:waitalittle -F \"photo=@/home/pi/" + filename + ";type=application/octet-stream;\" -F \"guid=" + str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php")
-	print("Image sent.")
+	print("send_picture(" + uid + "," + filename)
+	if os.path.isfile(filename):
+		os.system("curl -s -L -u tmwcolin:waitalittle -F \"photo=@/home/pi/" + filename + ";type=application/octet-stream;\" -F \"guid=" + str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php")
+	else:
+		print("Error: File not found.")
 	
 
-	#TODO: create preferences file and write to that instead of volatile var
+	#TODO: create preferences file and write to that instead of volatile var for image_count
 	
 	#294 = Roo's guid on the intranet.
-	
-
-        #the following is used to email a picture
-	#os.system("mpack -s \"Your Photo\" " + strImage + " roowilliams@gmail.com")
