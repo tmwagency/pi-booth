@@ -25,13 +25,14 @@ p {
 }
 
 #content {
-	min-height: 400px;
+	min-height: 500px;
 	width: 400px;
 	margin-left: auto;
 	margin-right: auto;
 	background: rgba(255,255,255,0.5);
 	border-radius: 12px;
 	padding: 20px;
+	position: relative;
 }
 
 .column {
@@ -61,6 +62,12 @@ p {
 	color: #bababa;
 }
 
+#log img {
+
+width: 380px;
+
+}
+
 #takepic {
 	border-radius: 50%;
 	width: 200px;
@@ -81,6 +88,7 @@ p {
 	color: #fff;
 }
 
+
 /* -------- Typography -------- */
 
 .welcome {
@@ -94,7 +102,8 @@ font: 18px sans-serif;
 /* -------- Form Elements -------- */
 
 input[type=text],
-input[type=submit] {
+input[type=submit],
+input[type=button] {
 	border: 5px solid #fff;
 	border-radius: 12px;
 	padding: 15px;
@@ -103,9 +112,6 @@ input[type=submit] {
 	color: #fff;
 }
 
-input[type=text].inactive {
-	color: rgba(255,255,255,0.6);
-}
 
 *::-webkit-input-placeholder, *::-webkit-input-placeholder:active {
    color: rgba(255,255,255,0.6);
@@ -121,4 +127,20 @@ input[type=text].inactive {
 *:-ms-input-placeholder, *:-ms-input-placeholder:active   {
     /* IE 10+ */
     color: rgba(255,255,255,0.6);
+}
+
+#home-button {
+	width: 380px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto 20px auto;
+}
+
+#look {
+	font: 38px sans-serif;
+	color: #bababa;
+	display: none;
+	
 }

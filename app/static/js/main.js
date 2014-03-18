@@ -17,23 +17,31 @@ var key = 0;
 	}
 	
     });
+    var d = new Date();
     socket.on('image', function(msg) {
-		image_url = msg.data;
-        $('#log').html('<img src=\"' + msg.data + '\" />');
-		
-	}
+	$('#look').hide();
+	var anticache = d.getTime();
+	image_url = msg.data;
+        $('#log').html('<img src=\"' + msg.data + "?" + anticache + '\" />');
+	
 	});
     $('#usubmit').click(function(event) {
+	
         socket.emit('user', {data: $('#uname_data').val()});
 	$('#uname_data').val('');
 	event.preventDefault();
-	$('#takepic').hide();
-
-        return false;
+	
     });
-    $('#takepic').click(function() {
+    $('#takepic').click(function(event) {
 	socket.emit('my event', { data: "takepic" });
-	return false;
+	$('#takepic').hide();
+	$('#look').fadeIn();
+	
+	event.preventDefault();
     });
-    
+
+    $('#home-button').click(function() {
+	window.location.replace("/");
+	
+    });
 });
