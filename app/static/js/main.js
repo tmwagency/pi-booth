@@ -11,12 +11,18 @@ var key = 0;
 		
 	}
 	else if (msg.response == '1') {
-		$('#log').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
+		$('#messaging').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
 		$('#takepic').fadeIn(800);
 		$('#user_submit').hide();
 	}
 	
     });
+    socket.on('image', function(msg) {
+		image_url = msg.data;
+        $('#log').html('<img src=\"' + msg.data + '\" />');
+		
+	}
+	});
     $('#usubmit').click(function(event) {
         socket.emit('user', {data: $('#uname_data').val()});
 	$('#uname_data').val('');

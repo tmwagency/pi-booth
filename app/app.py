@@ -68,7 +68,8 @@ def test_function(message):
     f = message['data']
     if f == 'takepic' and active_guid != 0:
     	#camera.preview(10000,config.dims)
-        camera.take_picture(active_guid,config.dims)
+        image = camera.take_picture(active_guid,config.dims)
+        emit('image', {'data': image })
     
 
 @socketio.on('connect', namespace='/test')
@@ -86,8 +87,6 @@ def test_connect():
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
     print('Client disconnected')
-
-
 
 def init_users(q, userfile_url):
     users = defaultdict(list)
