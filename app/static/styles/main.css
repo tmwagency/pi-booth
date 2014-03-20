@@ -62,12 +62,6 @@ p {
 	color: #bababa;
 }
 
-#log img {
-
-width: 380px;
-
-}
-
 #takepic {
 	border-radius: 50%;
 	width: 200px;
@@ -88,15 +82,35 @@ width: 380px;
 	color: #fff;
 }
 
+#image-controls {
+	display: none;
+}
+
+#photo {
+	margin-bottom: 20px;
+}
+
+#photo img {
+	width: 380px;
+}
+
 
 /* -------- Typography -------- */
 
+#look {
+	font: 38px sans-serif;
+	color: #bababa;
+	display: none;
+	
+}
+
 .welcome {
+	font: 28px sans-serif;
 }
 
 .instructions {
 
-font: 18px sans-serif;
+	font: 18px sans-serif;
 
 }
 /* -------- Form Elements -------- */
@@ -130,7 +144,8 @@ input[type=button] {
 }
 
 #home-button {
-	width: 380px;
+	display: none;
+	width: 180px;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -138,9 +153,13 @@ input[type=button] {
 	margin: 0 auto 20px auto;
 }
 
-#look {
-	font: 38px sans-serif;
-	color: #bababa;
-	display: none;
-	
+#try-button {
+	width: 182px;
+
+	margin: 0 10px 20px 0;
+}
+
+#confirm-button {
+	width: 182px;
+	margin: 0 auto 20px auto;
 }

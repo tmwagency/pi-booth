@@ -5,7 +5,7 @@
 
 </style>
     <title>{{title}}</title>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.0.min.js') }}"></script>
     <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
@@ -15,18 +15,22 @@
 <div id="container">
 	
 	<div id="content">
-
+		<div id="image-controls">
+			<input type="button" name="try-button" id="try-button" value="Try again">
+			<input type="button" name="confirm-button" id="confirm-button" value="Use this">
+		</div>
 		<div id="messaging"><p>Please enter your username below</p></div>
-	    <form id="user_submit">
-	        <input type="text" name="uname" id="uname_data" placeholder="Username">
-	        <input type="submit" name="usubmit" id="usubmit">
-	    </form>
+	        <form id="user_submit">
+	        	<input type="text" name="uname" id="uname_data" placeholder="Username">
+	        	<input type="submit" name="usubmit" id="usubmit">
+	        </form>
 	    
 		<div id="log"></div>
+		<div id="photo"></div>
 		<div id="look">Look at the camera!</div>
 	    	<div id="takepic"><div id="takepic-div" class="control">Take a photo</div></div>
 
-			<input type="button" name="home-button" id="home-button" value="Start again">
+			<input type="button" name="home-button" id="home-button" value="Start over">
 
 	</div>
 </div>

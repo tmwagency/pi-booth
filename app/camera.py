@@ -8,11 +8,14 @@ def preview(time,dims):
 def take_picture(uid,dims):
     image_count = 1
     countdown_time = 3000
-    strImage = "static/image" + str(image_count) + ".jpg"
-    os.system("raspistill -t " + str(countdown_time) + " -o " + strImage + " -p " + dims)
+    strImage = config.imgdir + "image" + str(image_count) + ".jpg"
+    print("raspistill -t " + str(countdown_time) + " -o " + strImage + " -w " + \
+              config.imgw + " -h " + config.imgh + " -p " + dims)
+    os.system("raspistill -t " + str(countdown_time) + " -o " + strImage + " -w " + \
+              config.imgw + " -h " + config.imgh + " -p " + dims)
     image_count = image_count + 1
     print("Image name:" + strImage)
-    send_picture(uid,strImage)
+    # send_picture(uid,strImage)
     print("uid:" + str(uid))
     return strImage
 
