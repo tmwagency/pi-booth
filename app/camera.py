@@ -5,29 +5,21 @@ def preview(time,dims):
     print "Previewing image"
     os.system("raspistill -t " + str(time) + " -p " + dims)
 
-def take_picture(uid,dims):
-    image_count = 1
-    countdown_time = 3000
-    strImage = config.imgdir + "image" + str(image_count) + ".jpg"
-    print("raspistill -t " + str(countdown_time) + " -o " + strImage + " -w " + \
+def take_picture(name,imgdir,dims,countdown):
+    image = imgdir + name + "-" + time.strftime('%d-%m-%Y') + ".jpg"
+    os.system("raspistill -t " + countdown + " -o " + image + " -w " + \
               config.imgw + " -h " + config.imgh + " -p " + dims)
-    os.system("raspistill -t " + str(countdown_time) + " -o " + strImage + " -w " + \
-              config.imgw + " -h " + config.imgh + " -p " + dims)
-    image_count = image_count + 1
-    print("Image name:" + strImage)
-    # send_picture(uid,strImage)
-    print("uid:" + str(uid))
-    return strImage
+    return image
 
-def send_picture(uid,filename):
+def send_picture(uid,image_file):
 	
-	if os.path.isfile(filename):
-            print("send_picture(" + uid + "," + filename + ")")
+	if os.path.isfile(image_file):
+            print("send_picture(" + uid + "," + image_file + ")")
 	    os.system("curl -s -L -u tmwcolin:waitalittle -F \"photo=@/home/pi/pi-booth/app/" + \
-                      filename + ";type=application/octet-stream;\" -F \"guid=" + \
+                      image_file + ";type=application/octet-stream;\" -F \"guid=" + \
                       str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php")
 	else:
-	    print("Error: File not found.")
+	    print("Error: File not found: " + image_file)
 	
 
 	#TODO: create preferences file and write to that instead of volatile var for image_count

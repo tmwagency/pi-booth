@@ -32,6 +32,9 @@ socketio = SocketIO(app)
 
 users = {}
 active_guid = 0
+active_user = ''
+image_file = ''
+active_sessions = 0
 
 dims = '\'282,20,460,558\''
 
@@ -39,7 +42,10 @@ dims = '\'282,20,460,558\''
 @app.route('/index')
 def index():
     print ('Client at index')
-    return render_template("index.html", users = return_users())
+    if active_sessions < 1:
+        return render_template("index.html", users = return_users())
+    else:
+        return render_template("busy.html", users = return_users())
 
 @app.route('/internal')
 def internal():
@@ -53,40 +59,47 @@ def test():
 
 @socketio.on('user', namespace='/test')
 def select_user(message):
-	global active_guid
-	user = message['data']
-	print user
-	guid_response = get_user_guid(user)
-	response_code = guid_response[0]
-	active_guid = guid_response[1]
-	first_name = guid_response[2].split(" ")[0]
-	emit('event', {'response': response_code, 'data': active_guid, 'name': first_name })
-    
-@socketio.on('my event', namespace='/test')
-def test_function(message):
-    print message['data']
-    f = message['data']
-    if f == 'takepic' and active_guid != 0:
+    global active_guid
+    global active_user
+    user = message['data']
+    print user
+    guid_response = get_user_guid(user)
+    response_code = guid_response[0]
+    active_guid = guid_response[1]
+    first_name = guid_response[2].split(" ")[0]
+    sirname = guid_response[2].split(" ")[1]
+    active_user = first_name + "_" + sirname
+    emit('event', {'response': response_code, 'data': active_guid, 'name': first_name })
+        
+@socketio.on('take_pic', namespace='/test')
+def take_pic(msg):
+    if active_guid != 0:
     	#camera.preview(10000,config.dims)
-        image = camera.take_picture(active_guid,config.dims)
-        emit('image', {'data': image })
-    
+        global image_file
+        global active_user
+        image_file = camera.take_picture(active_user,config.imgdir,config.dims,config.countdown)
+        print image_file
+        emit('image', {'data': image_file })
+
+@socketio.on('send_pic', namespace='/test')
+def send_pic(message):
+    global active_guid
+    global image_file
+    camera.send_picture(active_guid,image_file)
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
-    print ('Client connected')
+    global active_sessions
+    active_sessions += 1
+    print ('Client connected. ' + str(active_sessions) + " active sessions.")
     emit('event', {'data': 'Connected'})
-    '''
-    for i in range(0,100):
-        time.sleep(0.5)
-        emit('event',{'data': 'got it!!!', 'count': i})
-    time.sleep(50)
-    emit('event',{'data': 'still got it!!!'})
-    '''
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
-    print('Client disconnected')
+    global active_sessions
+    active_sessions -= 1
+    print('Client disconnected. ' + str(active_sessions) + " active sessions.")
+    
 
 def init_users(q, userfile_url):
     users = defaultdict(list)

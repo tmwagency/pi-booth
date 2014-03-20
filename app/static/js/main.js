@@ -39,7 +39,7 @@ $('#takepic').hide();
 	
     });
     $('#takepic').click(function(event) {
-	socket.emit('my event', { data: "takepic" });
+	socket.emit('take_pic', { data: "takepic" });
 	$('#takepic').hide();
 	$('#messaging').hide();
 	$('#look').fadeIn();
@@ -49,6 +49,15 @@ $('#takepic').hide();
     $('#try-button').click(function(event) {
 	$('#messaging').fadeIn(800);
 	$('#takepic').fadeIn(800);
+	$('#home-button').fadeIn(800);
+	$('#image-controls').hide();
+	$('#photo').html('');
+	event.preventDefault();
+    });
+
+    $('#confirm-button').click(function(event) {
+	socket.emit('send_pic', {data: 'confirm'});
+	$('#send-off').fadeIn(800);
 	$('#home-button').fadeIn(800);
 	$('#image-controls').hide();
 	$('#photo').html('');

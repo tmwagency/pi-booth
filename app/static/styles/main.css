@@ -82,7 +82,7 @@ p {
 	color: #fff;
 }
 
-#image-controls {
+#send-off, #look, #image-controls {
 	display: none;
 }
 
@@ -97,12 +97,11 @@ p {
 
 /* -------- Typography -------- */
 
-#look {
+#look p, #send-off p {
 	font: 38px sans-serif;
 	color: #bababa;
-	display: none;
-	
 }
+
 
 .welcome {
 	font: 28px sans-serif;
