@@ -3,7 +3,7 @@ $(document).ready(function(){
 $('#takepic').hide();
 
     var key = 0;
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/photo');
 
     socket.on('event', function(msg) {
 	if (msg.response == '0') {

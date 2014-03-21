@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, emit
 from threading import Thread
 import time
@@ -10,24 +10,11 @@ import config
 import Queue
 import camera
 
-'''
-import gaugette.rotary_encoder
-import gaugette.switch
-
-A_PIN  = 7
-B_PIN  = 9
-SW_PIN = 8
-
-encoder = gaugette.rotary_encoder.RotaryEncoder.Worker(A_PIN, B_PIN)
-encoder.start()
-switch = gaugette.switch.Switch(SW_PIN)
-last_state = None
-'''
-
 q = Queue.Queue()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
+app.debug=True
 socketio = SocketIO(app)
 
 users = {}
@@ -42,10 +29,8 @@ dims = '\'282,20,460,558\''
 @app.route('/index')
 def index():
     print ('Client at index')
-    if active_sessions < 1:
-        return render_template("index.html", users = return_users())
-    else:
-        return render_template("busy.html", users = return_users())
+    return render_template("index.html", users = return_users())
+    # return render_template("busy.html", users = return_users())
 
 @app.route('/internal')
 def internal():
@@ -57,7 +42,7 @@ def test():
     print ('Client at test')
     return render_template("test.html")
 
-@socketio.on('user', namespace='/test')
+@socketio.on('user', namespace='/photo')
 def select_user(message):
     global active_guid
     global active_user
@@ -66,12 +51,27 @@ def select_user(message):
     guid_response = get_user_guid(user)
     response_code = guid_response[0]
     active_guid = guid_response[1]
-    first_name = guid_response[2].split(" ")[0]
-    sirname = guid_response[2].split(" ")[1]
+    tempname = guid_response[2].split(" ")
+    first_name = tempname[0]
+    sirname = tempname[1]
     active_user = first_name + "_" + sirname
     emit('event', {'response': response_code, 'data': active_guid, 'name': first_name })
+    
+    id = 0
+    user = UserSession(id, tempname)
+    user.make_active()
+    id += 1
+    
+class UserSession(object):
+    
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
         
-@socketio.on('take_pic', namespace='/test')
+    def make_active(self):
+        print self.username[0] + " " + self.username[1] + " is the first user."
+        
+@socketio.on('take_pic', namespace='/photo')
 def take_pic(msg):
     if active_guid != 0:
     	#camera.preview(10000,config.dims)
@@ -81,24 +81,21 @@ def take_pic(msg):
         print image_file
         emit('image', {'data': image_file })
 
-@socketio.on('send_pic', namespace='/test')
+@socketio.on('send_pic', namespace='/photo')
 def send_pic(message):
     global active_guid
     global image_file
     camera.send_picture(active_guid,image_file)
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect', namespace='/photo')
 def test_connect():
-    global active_sessions
-    active_sessions += 1
-    print ('Client connected. ' + str(active_sessions) + " active sessions.")
+    print ('Client connected.')
+    print 
     emit('event', {'data': 'Connected'})
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect', namespace='/photo')
 def test_disconnect():
-    global active_sessions
-    active_sessions -= 1
-    print('Client disconnected. ' + str(active_sessions) + " active sessions.")
+    print('Client disconnected.')
     
 
 def init_users(q, userfile_url):
