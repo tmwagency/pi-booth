@@ -17,7 +17,9 @@ app.config['SECRET_KEY'] = 'secret!'
 app.debug=True
 socketio = SocketIO(app)
 
-users = {}
+users_dict = {}
+users = []
+
 active_guid = 0
 active_user = ''
 image_file = ''
@@ -32,11 +34,6 @@ def index():
     return render_template("index.html", users = return_users())
     # return render_template("busy.html", users = return_users())
 
-@app.route('/internal')
-def internal():
-    print ('Client at internal')
-    return render_template("internal.html", users = return_users())
-
 @app.route('/test')
 def test():
     print ('Client at test')
@@ -46,33 +43,59 @@ def test():
 def select_user(message):
     global active_guid
     global active_user
-    user = message['data']
-    print user
-    guid_response = get_user_guid(user)
+    user_input = message['data']
+    guid_response = get_user_guid(user_input)
+    
     response_code = guid_response[0]
     active_guid = guid_response[1]
     tempname = guid_response[2].split(" ")
+    print tempname
     first_name = tempname[0]
     sirname = tempname[1]
     active_user = first_name + "_" + sirname
     emit('event', {'response': response_code, 'data': active_guid, 'name': first_name })
-    
-    id = 0
-    user = UserSession(id, tempname)
-    user.make_active()
-    id += 1
-    
+
 class UserSession(object):
+
+    timeout = 3000
     
-    def __init__(self, id, username):
-        self.id = id
+    def __init__(self, guid, username, full_name):
+        self.guid = guid
         self.username = username
-        
-    def make_active(self):
-        print self.username[0] + " " + self.username[1] + " is the first user."
-        
+        self.full_name = full_name
+        self.first_name = full_name.split(" ")[0]
+        self.sir_name = full_name.split(" ")[1]
+        self.time = int(time.clock() * 1000)
+        print "-----> " + str(self.time)
+
+    def still_alive(self):
+        self.time = int(time.clock() * 1000)
+    
+    def check_timeout(self):
+        curr_time = int(time.clock() * 1000)
+        print str(curr_time) + " - " + str(self.timeout) + " " + str(self.time)
+        if curr_time - self.timeout > self.time:
+            return True
+        else:
+            return False
+
+
+class MyThread(Thread):
+    def __init__(self,event)
+        Thread.__init__(self)
+        self.stopped = event
+
+    def run(self)
+        while not self.stopped.wait(0.5):
+            print "my thread"
+
+
+
+            
 @socketio.on('take_pic', namespace='/photo')
 def take_pic(msg):
+    print users[0].check_timeout()
+    users[0].still_alive()   
     if active_guid != 0:
     	#camera.preview(10000,config.dims)
         global image_file
@@ -90,7 +113,6 @@ def send_pic(message):
 @socketio.on('connect', namespace='/photo')
 def test_connect():
     print ('Client connected.')
-    print 
     emit('event', {'data': 'Connected'})
 
 @socketio.on('disconnect', namespace='/photo')
@@ -98,39 +120,65 @@ def test_disconnect():
     print('Client disconnected.')
     
 
+
+ 
+
+def get_user_guid(input_var):
+    #make user input lower case
+    input_var_key = input_var[:1].lower()
+    #a code to indicate successful resolution of user to front end script
+    code = 0
+    
+    #find user in dict by searching by entered username and create a list of /
+    #returned values: ['username', 'guid', 'full_name']
+    try:
+        user_list = [s for s in users_dict[input_var_key] if input_var in s][0]
+        
+        guid = user_list[1]
+        username = user_list[0]
+        print "-----> " + username
+        full_name = user_list[2]
+        
+        #create a new user object
+        user = UserSession(guid, username, full_name)
+        #add the user to a list of currently active users
+        users.append(user)
+        print user
+        print user.check_timeout()
+        print user.full_name
+        print user.first_name
+        print user.sir_name
+        #return a success code
+        code = 1
+        guid_response = code, user.guid, user.full_name
+        return guid_response
+
+    #if a username isn't found
+    except IndexError:
+        code = 0
+        guid_response = code, input_var, '0' #function on the front end expects 3 vars, so sending a '0'
+        return guid_response
+    
+
+
+
 def init_users(q, userfile_url):
-    users = defaultdict(list)
+    users_dict = defaultdict(list)
     data = urllib2.urlopen(userfile_url)
 
     for line in data.readlines():
         id, username, fullname = line.split(", ")
-        users[username[:1].lower()].append((username, id, fullname.rstrip())) 
-    q.put(users)
-    print ':: Built user dict'
-        
+        users_dict[username[:1].lower()].append((username, id, fullname.rstrip())) 
+    q.put(users_dict)
+    print '-----> Built user dict'
+    #print users_dict
+
 def return_users():
-    global users
+    global users_dict
     thr = Thread(target=init_users, args=(q, config.user_file_url,))
     thr.start()
     thr.join()
-    users = q.get()
-
-def get_user_guid(input_var):
-    input_var_key = input_var[:1].lower()
-    code = 0
-    try:
-        guid = [s for s in users[input_var_key] if input_var in s][0][1]
-        if guid:
-        	full_name = [s for s in users[input_var_key] if input_var in s][0][2]
-        code = 1
-        guid_response = code, guid, full_name
-        return guid_response
-    except IndexError:
-        code = 0
-        guid_response = code, input_var, '0'
-        
-        return guid_response
-
+    users_dict = q.get()
         
 if __name__ == '__main__':
     socketio.run(app,'0.0.0.0',80)
