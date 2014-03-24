@@ -44,4 +44,4 @@ bin
 include
 local
 
-temp
+/static/temp
