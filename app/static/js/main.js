@@ -7,7 +7,7 @@ $('#takepic').hide();
 
     socket.on('event', function(msg) {
 	if (msg.response == '0') {
-        	$('#log').html('<p>User ' + msg.data + ' does not exist, please try again.</p>');
+        	$('#log').html('<p>User ' + msg.name + ' does not exist, please try again.</p>');
 		
 	}
 	else if (msg.response == '1') {
