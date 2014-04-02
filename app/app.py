@@ -23,9 +23,10 @@ socketio = SocketIO(app)
 model = UserDataParser('http://www.roowilliams.com/ruh.php','cache.csv',60)
 camera = Camera()
 
+users = []
 
 active_guid = 0
-user = None
+
 image_file = ''
 active_sessions = 0
 
@@ -50,15 +51,17 @@ def select_user(message):
 		success = 1
 		guid = user.guid
 		name = user.first_name
+		users.insert(0,user)
 
 	emit('event', {'response': success, 'data': guid, 'name': name})
 
 @socketio.on('take_pic', namespace='/photo')
 def take_pic(msg):
-
-    #camera.preview(10000,config.dims)
-	photo = camera.take_picture(config.imgdir,user=user)
-	print photo
+	#created a list to hold the user object globally
+	user = users[0]
+	filename = user.first_name + "_" + user.sir_name
+	photo = camera.take_picture(user.,user=users[0])
+	print photo.full_path
 	emit('image', {'data': photo.full_path })
 
 @socketio.on('send_pic', namespace='/photo')
@@ -75,7 +78,8 @@ def test_connect():
 @socketio.on('disconnect', namespace='/photo')
 def test_disconnect():
     print('Client disconnected.')
-    
+
+'''
 class MyThread(Thread):
     def __init__(self,event):
         Thread.__init__(self)
@@ -84,6 +88,6 @@ class MyThread(Thread):
     def run(self):
         while not self.stopped.wait(0.5):
             print "my thread"
-        
+'''
 if __name__ == '__main__':
     socketio.run(app,'0.0.0.0',80)

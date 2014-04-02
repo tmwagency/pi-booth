@@ -14,19 +14,21 @@ class Camera(object):
 		return photo
 
 	class Photo(object):
-		def __init__(self, imgdir, filename, author, prev_dims, width, height, prev_countdown):
+		def __init__(self, imgdir, filename, author, preview_dims, width, height, preview_countdown):
 			self.imgdir = imgdir
 			self.filename = filename
 			self.full_path = imgdir + filename
 			self.author = author
 			self.imgw = width
 			self.imgh = height
-			self.preview_dimensions = prev_dims
-			self.countdown = prev_countdown
+			self.preview_dimensions = preview_dims
+			self.countdown = preview_countdown
 			self.creation_date = time.strftime('%d-%m-%Y')
 			# generate the photo using properties above
-			os.system("raspistill -t " + countdown + " -o " + file_path + " -w " + \
-				  imgw + " -h " + imgh + " -p " + prev_dims)
+			os.system("raspistill -t " + preview_countdown + " -o " + imgdir + filename + " -w " + \
+			width + " -h " + height + " -p " + preview_dims)
+
+			
 			
 	def send_picture(uid, image_file):
 		

@@ -4,6 +4,7 @@ import urllib2
 from collections import defaultdict
 
 
+
 class UserDataParser(object):
 
 	def __init__(self, url, cachefile, freq):
@@ -89,8 +90,7 @@ class UserDataParser(object):
 
 	class UserSession(object):
 
-		timeout = 3000
-		
+		timeout = 3000	
 		
 		def __init__(self, guid, username, full_name):
 			self.guid = guid
@@ -113,6 +113,6 @@ class UserDataParser(object):
 				return False
 				
 	def run(self):
-		thr = Thread(built_user_dict, userfile)
+		thr = Thread(make_user_dict, userfile)
 		thr.start()
 		thr.join()
