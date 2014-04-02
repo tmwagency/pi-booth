@@ -43,17 +43,13 @@ class UserDataParser(object):
 			
 			guid = user_list[1]
 			username = user_list[0]
-			print "-----> " + username
 			full_name = user_list[2]
 			
 			# create a new user object
 			user = self.UserSession(guid, username, full_name)
 			# add the user to a list of currently active users
-			print user
+			print "-----> " + username
 			print user.check_timeout()
-			print user.full_name
-			print user.first_name
-			print user.sir_name
 			response = [user.guid, user.first_name]
 			# return a success code
 			#code = 1
@@ -111,6 +107,7 @@ class UserDataParser(object):
 				return True
 			else:
 				return False
+
 				
 	def run(self):
 		thr = Thread(make_user_dict, userfile)
