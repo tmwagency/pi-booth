@@ -18,7 +18,7 @@ socketio = SocketIO(app)
 # Instance of class that downloads the list of users from TMW's intranet.
 # It runs continuously on a thread, updating the file at the frequency
 # specified (secs): ('url','localfile',frequency)
-model = UserDataParser('http://www.roowilliams.com/ruh.php','cache.csv',60)
+model = UserDataParser(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
 camera = Camera()
 
 users = []
@@ -83,18 +83,60 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected.')
 
+def threaded(f, daemon=False):
+    import Queue
 
+    def wrapped_f(q, *args, **kwargs):
+        '''this function calls the decorated function and puts the 
+        result in a queue'''
+        ret = f(*args, **kwargs)
+        q.put(ret)
+
+    def wrap(*args, **kwargs):
+        '''this is the function returned from the decorator. It fires off
+        wrapped_f in a new thread and returns the thread object with
+        the result queue attached'''
+
+        q = Queue.Queue()
+
+        t = threading.Thread(target=wrapped_f, args=(q,)+args, kwargs=kwargs)
+        t.daemon = daemon
+        t.start()
+        t.result_queue = q        
+        return t
+
+    return wrap
+    
+@threaded
+def check_user_timeout(user):
+	timeout = int(config.session_timeout)
+	
+	if timeout_test(timeout) is True:
+		end_user('timeout')
+	else:
+		time.sleep(30)
+		check_user_timeout(timeout)
+	
+def timeout_test(timeout):
+	user = users[0]
+	curr_time = int(time.clock() * 1000)
+	if curr_time - timeout > user.time:
+		return True
+	else:
+		return False
+
+	
+	
 def end_user(reason):
     del users[0]
-    del photos[0]
+    if len(photos) > 0:
+		del photos[0]
     if reason == 'timeout':
-        emit('event', {'data': 'timeout'})
+		print "-----> User timed out"
+		socketio.emit('timeout', {'data': 'timeout'})
     elif reason == 'end':
         pass
 
-def check_user_timeout(user):
-    thread = threading.Timer(1, user.check_timeout, queue).start()
-    print ":: " + str(queue.qsize())
 
 
 '''

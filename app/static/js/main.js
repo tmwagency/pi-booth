@@ -19,6 +19,12 @@ $('#takepic').hide();
 	}
 	
     });
+    
+	socket.on('timeout', function(msg) {
+	if (msg.data == 'timeout') {
+		alert("Timeout, fucker!!");
+	}
+	});
 
     socket.on('image', function(msg) {	
 	$('#look').hide();

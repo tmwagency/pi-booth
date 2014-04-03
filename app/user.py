@@ -1,5 +1,6 @@
 import threading
-import time
+import Queue
+import time, os
 import urllib2
 from collections import defaultdict
 
@@ -49,11 +50,7 @@ class UserDataParser(object):
 			user = self.UserSession(guid, username, full_name)
 			# add the user to a list of currently active users
 			print "-----> " + username
-			print user.check_timeout()
-			response = [user.guid, user.first_name]
-			# return a success code
-			#code = 1
-			#guid_response = code, user.guid, user.full_name
+
 			return user
 
 		# if a username isn't found
@@ -68,14 +65,17 @@ class UserDataParser(object):
 			self.url = url
 			self.cachefile = cachefile
 			self.freq = freq
+			self.update()
 					
 		# This should run as a thread that updates the user cache file at the update frequency
 		# specified.
 		def update(self):
 			data = urllib2.urlopen(self.url)
-			file = self.cachefile
+			script_dir = os.path.dirname(__file__)
+			rel_path = self.cachefile
+			file = os.path.join(script_dir, rel_path)
 
-			with open(file, 'w') as f: f.write(data.read())
+			with open(file, 'a+') as f: f.write(data.read())
 			print '-----> Users updated and written to ' + self.cachefile
 			thr1 = threading.Timer(self.freq, self.update).start()
 
@@ -86,30 +86,11 @@ class UserDataParser(object):
 
 	class UserSession(object):
 
-		timeout = 3000	
-		
 		def __init__(self, guid, username, full_name):
 			self.guid = guid
 			self.username = username
 			self.full_name = full_name
 			self.first_name = full_name.split(" ")[0]
 			self.sir_name = full_name.split(" ")[1]
-			self.time = int(time.clock() * 1000)
+			self.time = int(time.clock() * 1000) # start of user session
 			print "-----> " + str(self.time)
-
-		def still_alive(self):
-			self.time = int(time.clock() * 1000)
-		
-		def check_timeout(self):
-			curr_time = int(time.clock() * 1000)
-			print str(curr_time) + " - " + str(self.timeout) + " " + str(self.time)
-			if curr_time - self.timeout > self.time:
-				return True
-			else:
-				return False
-
-				
-	def run(self):
-		thr = Thread(make_user_dict, userfile)
-		thr.start()
-		thr.join()
