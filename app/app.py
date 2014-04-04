@@ -7,6 +7,7 @@ from collections import defaultdict
 import config
 from camera import Camera
 from user import UserDataParser
+import RPi.GPIO as GPIO
 
 
 
@@ -14,6 +15,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.debug=True
 socketio = SocketIO(app)
+reset_pin = 3
 
 # Instance of class that downloads the list of users from TMW's intranet.
 # It runs continuously on a thread, updating the file at the frequency
@@ -21,12 +23,16 @@ socketio = SocketIO(app)
 model = UserDataParser(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
 camera = Camera()
 
+
+
 users = []
 photos = []
 queue = Queue.Queue()
 
 
 dims = '\'282,20,460,558\''
+
+
 
 @app.route('/')
 @app.route('/index')
@@ -147,7 +153,17 @@ def end_user(reason):
     elif reason == 'end':
         pass
 
+def main():
+	GPIO.setmode(GPIO.BCM)
+	GPIO.setup(reset_pin,GPIO.IN)
 
+	GPIO.add_event_detect(reset_pin,GPIO.RISING)
+	GPIO.add_event_callback(reset_pin,restart_program,100)
+	
+	def restart_program():
+		python = sys.executable
+		os.execl(python, python, * sys.argv)
+		GPIO.cleanup()
 
 '''
 class MyThread(Thread):
@@ -161,3 +177,4 @@ class MyThread(Thread):
 '''
 if __name__ == '__main__':
     socketio.run(app,'0.0.0.0',80)
+    main()
