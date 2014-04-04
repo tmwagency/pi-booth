@@ -1,5 +1,10 @@
 import sys, os, time
 import config
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(7, GPIO.OUT)
+GPIO.output(7, False) #turn off pin
 
 class Camera(object):
 	def __init__(self):
@@ -8,10 +13,21 @@ class Camera(object):
 	def preview(self, time, dims):
 		print "Previewing image"
 		os.system("raspistill -t " + str(time) + " -p " + dims)
-
+		
+	def flash_on(self):
+		GPIO.output(7, True) #turn off pin
+	
+	def flash_off(self):
+		GPIO.output(7, False) #turn off pin
+		
 	def take_picture(self, filename='tempimg.jpg', width=config.imgw, height=config.imgh, user='default'):
+		self.flash_on()
+		time.sleep(0.5)
 		photo = self.Photo(config.imgdir, filename, user.username, config.dims, width, height, config.countdown)
+		self.flash_off()
 		return photo
+	
+	
 			
 	def send_picture(self, uid, image_file):
 		if os.path.isfile(image_file):

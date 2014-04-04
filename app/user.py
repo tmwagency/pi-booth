@@ -15,12 +15,22 @@ class UserDataParser(object):
 		#self.user = self.UserSession()
 		downloader = self.DataDownloader(url, cachefile, freq)
 		downloader.run()
-	
+		
+	# This gets repeated in the DataDownlader class, I couldn't figure
+	# out how to reference one function from both classes.
+	# Will fix when I know how.
+	def userfile_path(self):
+		script_dir = os.path.dirname(__file__)
+		rel_path = self.userfile
+		file = os.path.join(script_dir, rel_path)
+		return file
+		
 	# create a python dictionary of users by parsing the local csv file
 	# of users pulled from the intranet. This needs to happen on a thread.
 	def make_user_dict(self, userfile):
 		users_dict = defaultdict(list)
-		data = open(userfile,'r')
+		data = open(self.userfile_path(),'r')
+
 
 		for line in data.readlines():
 			id, username, fullname = line.split(", ")
@@ -70,16 +80,19 @@ class UserDataParser(object):
 		# This should run as a thread that updates the user cache file at the update frequency
 		# specified.
 		def update(self):
+			
 			data = urllib2.urlopen(self.url)
-			script_dir = os.path.dirname(__file__)
-			rel_path = self.cachefile
-			file = os.path.join(script_dir, rel_path)
 
-			with open(file, 'a+') as f: f.write(data.read())
+			with open(self.userfile_path(), 'a+') as f: f.write(data.read())
 			print '-----> Users updated and written to ' + self.cachefile
 			thr1 = threading.Timer(self.freq, self.update).start()
 
-			
+		def userfile_path(self):
+			script_dir = os.path.dirname(__file__)
+			rel_path = self.cachefile
+			file = os.path.join(script_dir, rel_path)
+			return file
+		
 		def run(self):
 				thr1 = threading.Timer(self.freq, self.update).start()
 				

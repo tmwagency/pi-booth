@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, emit
-import threading
-import time
-import sys
+import threading, Queue
+import time, sys
 from collections import defaultdict
 import config
-import Queue
 from camera import Camera
 from user import UserDataParser
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -55,24 +55,35 @@ def select_user(message):
 		check_user_timeout(user)
 
 	emit('event', {'response': success, 'data': guid, 'name': name})
+	
+@socketio.on('restart', namespace='/photo')
+def restart(msg):
+	end_user('end')
 
 @socketio.on('take_pic', namespace='/photo')
 def take_pic(msg):
-    #created a list to hold the user object globally
-    user = users[0]
-    filename = user.first_name + "_" + user.sir_name + ".jpg"
-    photo = camera.take_picture(filename,user=user)
-    photos.insert(0,photo)
-    print "-----> web_path: " + photo.web_path
-    emit('image', {'data': photo.web_path })
+	if len(users) > 0:
+		#created a list to hold the user object globally
+		user = users[0]
+		filename = user.first_name + "_" + user.sir_name + ".jpg"
+		photo = camera.take_picture(filename,user=user)
+		photos.insert(0,photo)
+		print "-----> web_path: " + photo.web_path
+		emit('image', {'data': photo.web_path })
+	else:
+		pass
+		
 
 @socketio.on('send_pic', namespace='/photo')
 def send_pic(message):
-    user = users[0]
-    photo = photos[0]
-    camera.send_picture(user.guid,photo.full_path)
-    end_user('end')
-    #end user session
+	if len(users) > 0:
+		user = users[0]
+		photo = photos[0]
+		camera.send_picture(user.guid,photo.full_path)
+		end_user('end')
+		#end user session
+	else:
+		pass
 
 @socketio.on('connect', namespace='/photo')
 def test_connect():
@@ -110,12 +121,12 @@ def threaded(f, daemon=False):
 @threaded
 def check_user_timeout(user):
 	timeout = int(config.session_timeout)
-	
-	if timeout_test(timeout) is True:
-		end_user('timeout')
-	else:
-		time.sleep(30)
-		check_user_timeout(timeout)
+	if len(users) > 0:
+		if timeout_test(timeout) is True:
+			end_user('timeout')
+		else:
+			time.sleep(30)
+			check_user_timeout(timeout)
 	
 def timeout_test(timeout):
 	user = users[0]
@@ -133,7 +144,6 @@ def end_user(reason):
 		del photos[0]
     if reason == 'timeout':
 		print "-----> User timed out"
-		socketio.emit('timeout', {'data': 'timeout'})
     elif reason == 'end':
         pass
 
