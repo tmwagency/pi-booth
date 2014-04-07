@@ -44,5 +44,5 @@ bin
 include
 local
 
-pi-booth/static/temp
+pi-booth/app/static/temp
 *.csv

@@ -1,10 +1,11 @@
 import sys, os, time
 import config
-import RPi.GPIO as GPIO
+#import RPIO
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(7, GPIO.OUT)
-GPIO.output(7, False) #turn off pin
+flash_pin = 4
+#RPIO.setmode(RPIO.BCM)
+#RPIO.setup(flash_pin, RPIO.OUT)
+#RPIO.output(flash_pin, True) #turn off pin
 
 class Camera(object):
 	def __init__(self):
@@ -15,10 +16,12 @@ class Camera(object):
 		os.system("raspistill -t " + str(time) + " -p " + dims)
 		
 	def flash_on(self):
-		GPIO.output(7, True) #turn off pin
-	
+		RPIO.output(flash_pin, False) #turn off pin
+
+		
 	def flash_off(self):
-		GPIO.output(7, False) #turn off pin
+		RPIO.output(flash_pin, True) #turn off pin
+
 		
 	def take_picture(self, filename='tempimg.jpg', width=config.imgw, height=config.imgh, user='default'):
 		self.flash_on()

@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+
 from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, emit
 import threading, Queue
-import time, sys
+import time, sys, os, signal
 from collections import defaultdict
-import config
 from camera import Camera
 from user import UserDataParser
-import RPi.GPIO as GPIO
+import RPi.GPIO as gpio
+
+import config
 
 
 
@@ -15,7 +17,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.debug=True
 socketio = SocketIO(app)
-reset_pin = 3
+
 
 # Instance of class that downloads the list of users from TMW's intranet.
 # It runs continuously on a thread, updating the file at the frequency
@@ -23,16 +25,31 @@ reset_pin = 3
 model = UserDataParser(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
 camera = Camera()
 
-
-
 users = []
 photos = []
 queue = Queue.Queue()
 
-
 dims = '\'282,20,460,558\''
 
+reset_pin = 27
 
+def restart_program(pin):
+	print "-----> Restart"
+	try:
+		gpio.cleanup()
+		python = sys.executable
+		os.execl(python, python, * sys.argv)
+	except Exception as e:
+		print e
+
+gpio.setmode(gpio.BCM)
+gpio.setup(reset_pin, gpio.IN, pull_up_down=gpio.PUD_UP)
+
+gpio.add_event_detect( \
+reset_pin, \
+gpio.FALLING, \
+callback=restart_program, \
+bouncetime=200)
 
 @app.route('/')
 @app.route('/index')
@@ -153,28 +170,22 @@ def end_user(reason):
     elif reason == 'end':
         pass
 
-def main():
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(reset_pin,GPIO.IN)
 
-	GPIO.add_event_detect(reset_pin,GPIO.RISING)
-	GPIO.add_event_callback(reset_pin,restart_program,100)
-	
-	def restart_program():
-		python = sys.executable
-		os.execl(python, python, * sys.argv)
-		GPIO.cleanup()
+# This function creates a clean exit on ctrl+c
+def signal_handler(signal, frame):
+	print '-----> Quit'
+	gpio.cleanup()
+	sys.exit(0)
 
-'''
-class MyThread(Thread):
-    def __init__(self,event):
-        Thread.__init__(self)
-        self.stopped = event
+signal.signal(signal.SIGINT, signal_handler)
 
-    def run(self):
-        while not self.stopped.wait(0.5):
-            print "my thread"
-'''
+
+
+
+
+
+
+
 if __name__ == '__main__':
     socketio.run(app,'0.0.0.0',80)
-    main()
+
