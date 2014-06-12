@@ -8,6 +8,7 @@ from collections import defaultdict
 from camera import Camera
 from user import UserDataParser
 import RPi.GPIO as gpio
+#import RPIO as gpio
 
 import config
 
@@ -33,6 +34,7 @@ dims = '\'282,20,460,558\''
 
 reset_pin = 27
 
+'''
 def restart_program(pin):
 	print "-----> Restart"
 	try:
@@ -50,6 +52,11 @@ reset_pin, \
 gpio.FALLING, \
 callback=restart_program, \
 bouncetime=200)
+
+'''
+
+
+
 
 @app.route('/')
 @app.route('/index')
@@ -117,19 +124,20 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected.')
 
+
 def threaded(f, daemon=False):
     import Queue
 
     def wrapped_f(q, *args, **kwargs):
-        '''this function calls the decorated function and puts the 
-        result in a queue'''
+        #this function calls the decorated function and puts the 
+        #result in a queue
         ret = f(*args, **kwargs)
         q.put(ret)
 
     def wrap(*args, **kwargs):
-        '''this is the function returned from the decorator. It fires off
-        wrapped_f in a new thread and returns the thread object with
-        the result queue attached'''
+        #this is the function returned from the decorator. It fires off
+        #wrapped_f in a new thread and returns the thread object with
+        #the result queue attached
 
         q = Queue.Queue()
 
