@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from camera import Camera
 from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, emit
 import threading, Queue
 import time, sys, os, signal
 from collections import defaultdict
-from camera import Camera
+
 from user import UserDataParser
-import RPi.GPIO as gpio
-#import RPIO as gpio
 
 import config
 
-
+#import RPIO as gpio
+#gpio.setmode(gpio.BCM)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -34,8 +34,10 @@ dims = '\'282,20,460,558\''
 
 reset_pin = 27
 
-'''
-def restart_program(pin):
+
+
+
+def restart_program(gpio_id, value):
 	print "-----> Restart"
 	try:
 		gpio.cleanup()
@@ -43,20 +45,17 @@ def restart_program(pin):
 		os.execl(python, python, * sys.argv)
 	except Exception as e:
 		print e
+'''		
+gpio.wait_for_interrupts(threaded=True)
 
-gpio.setmode(gpio.BCM)
-gpio.setup(reset_pin, gpio.IN, pull_up_down=gpio.PUD_UP)
-
-gpio.add_event_detect( \
+gpio.add_interrupt_callback(
 reset_pin, \
-gpio.FALLING, \
-callback=restart_program, \
-bouncetime=200)
-
+restart_program, \
+edge='both', \
+pull_up_down=gpio.PUD_UP, \
+threaded_callback=False, \
+debounce_timeout_ms=20)
 '''
-
-
-
 
 @app.route('/')
 @app.route('/index')
@@ -166,8 +165,6 @@ def timeout_test(timeout):
 		return True
 	else:
 		return False
-
-	
 	
 def end_user(reason):
     del users[0]
@@ -188,12 +185,5 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
     socketio.run(app,'0.0.0.0',80)
-

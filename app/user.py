@@ -30,8 +30,7 @@ class UserDataParser(object):
 	def make_user_dict(self, userfile):
 		users_dict = defaultdict(list)
 		data = open(self.userfile_path(),'r')
-
-
+		print "-----> Data opened"
 		for line in data.readlines():
 			id, username, fullname = line.split(", ")
 			users_dict[username[:1].lower()].append((username, id, fullname.rstrip())) 
