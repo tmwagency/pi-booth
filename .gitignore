@@ -2,6 +2,7 @@
 
 # Config
 /pi-booth/config.py
+app/static/temp
 
 # C extensions
 *.so
