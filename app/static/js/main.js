@@ -6,10 +6,11 @@ $(document).ready(function(){
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + '/photo');
 	
 	    socket.on('event', function(msg) {
-		if (msg.response == '0') {
-	        	$('#log').html('<p>User ' + msg.name + ' does not exist, please try again.</p>');
 			
-		}
+			if (msg.response == '0') {
+				$('#log').html('<p>User ' + msg.name + ' does not exist, please try again.</p>');	
+			}
+		
 		else if (msg.response == '1') {
 			$('#messaging').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
 			$('#log').html('')
@@ -21,53 +22,53 @@ $(document).ready(function(){
 	    });
 	    
 		socket.on('timeout', function(msg) {
-		if (msg.data == 'timeout') {
-			alert("Timeout, fucker!!");
-		}
+			if (msg.data == 'timeout') {
+				alert("Timeout, fucker!!");
+			}
 		});
 	
 	    socket.on('image', function(msg) {	
-		$('#look').hide();
-		$('#log').hide();
-		var anticache = new Date().getTime();
-		console.log('anticache run: ' + anticache);
-		image_url = msg.data;
-	        $('#photo').html('<img src=\"' + msg.data + "?" + anticache + '\" />');
-		$('#image-controls').show();
-		$('#home-button').hide();
+			$('#look').hide();
+			$('#log').hide();
+			var anticache = new Date().getTime();
+			console.log('anticache run: ' + anticache);
+			image_url = msg.data;
+				$('#photo').html('<img src=\"' + msg.data + "?" + anticache + '\" />');
+			$('#image-controls').show();
+			$('#home-button').hide();
 		
 		});
 	    $('#usubmit').click(function(event) {
 		
 	        socket.emit('user', {data: $('#uname_data').val()});
-		$('#uname_data').val(''); 
-		event.preventDefault();
+			$('#uname_data').val(''); 
+			event.preventDefault();
 		
 	    });
 	    $('#takepic').click(function(event) {
-		socket.emit('take_pic', { data: 'takepic' });
-		$('#takepic').hide();
-		$('#messaging').hide();
-		$('#look').fadeIn();
-		event.preventDefault();
+			socket.emit('take_pic', { data: 'takepic' });
+			$('#takepic').hide();
+			$('#messaging').hide();
+			$('#look').fadeIn();
+			event.preventDefault();
 	    });
 	
 	    $('#try-button').click(function(event) {
-		$('#messaging').fadeIn(800);
-		$('#takepic').fadeIn(800);
-		$('#home-button').fadeIn(800);
-		$('#image-controls').hide();
-		$('#photo').html('');
-		event.preventDefault();
+			$('#messaging').fadeIn(800);
+			$('#takepic').fadeIn(800);
+			$('#home-button').fadeIn(800);
+			$('#image-controls').hide();
+			$('#photo').html('');
+			event.preventDefault();
 	    });
 	
 	    $('#confirm-button').click(function(event) {
-		socket.emit('send_pic', {data: 'confirm'});
-		$('#send-off').fadeIn(800);
-		$('#home-button').fadeIn(800);
-		$('#image-controls').hide();
-		$('#photo').html('');
-		event.preventDefault();
+			socket.emit('send_pic', {data: 'confirm'});
+			$('#send-off').fadeIn(800);
+			$('#home-button').fadeIn(800);
+			$('#image-controls').hide();
+			$('#photo').html('');
+			event.preventDefault();
 	    });
 	
 	    $('#home-button').click(function() {

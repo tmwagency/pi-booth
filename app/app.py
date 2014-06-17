@@ -6,6 +6,7 @@ from flask.ext.socketio import SocketIO, emit
 import threading, Queue
 import time, sys, os, signal
 from collections import defaultdict
+import RPIO as gpio
 
 from user import UserDataParser
 
@@ -108,7 +109,7 @@ def send_pic(message):
 	if len(users) > 0:
 		user = users[0]
 		photo = photos[0]
-		camera.send_picture(user.guid,photo.full_path)
+		photo.send_picture(user.guid,photo.full_path)
 		end_user('end')
 		#end user session
 	else:
@@ -178,9 +179,10 @@ def end_user(reason):
 
 # This function creates a clean exit on ctrl+c
 def signal_handler(signal, frame):
-	print '-----> Quit'
 	gpio.cleanup()
+	print '-----> Quit'
 	sys.exit(0)
+	
 
 signal.signal(signal.SIGINT, signal_handler)
 

@@ -58,8 +58,8 @@ class UserDataParser(object):
 			# create a new user object
 			user = self.UserSession(guid, username, full_name)
 			# add the user to a list of currently active users
-			print "-----> " + username
-
+			print "user.py -----> username: " + username
+			print "user.py -----> guid: " + guid
 			return user
 
 		# if a username isn't found
@@ -82,7 +82,7 @@ class UserDataParser(object):
 			
 			data = urllib2.urlopen(self.url)
 
-			with open(self.userfile_path(), 'a+') as f: f.write(data.read())
+			with open(self.userfile_path(), 'w') as f: f.write(data.read())
 			print '-----> Users updated and written to ' + self.cachefile
 			thr1 = threading.Timer(self.freq, self.update).start()
 
