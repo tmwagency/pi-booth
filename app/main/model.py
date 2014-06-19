@@ -5,18 +5,58 @@ import urllib2
 from collections import defaultdict
 
 
+''' User object; created when a user logs in '''
+class UserSession(object):
 
-class UserDataParser(object):
+	def __init__(self, guid, username, full_name):
+
+		self.guid = guid
+		self.username = username
+		self.full_name = full_name
+		self.first_name = full_name.split(" ")[0]
+		self.sir_name = full_name.split(" ")[1]
+		self.time = int(time.clock() * 1000) # start of user session
+
+		print "-----> " + str(self.time)
+
+
+
+
+''' Photo object; created when the camera captures a photo '''
+class Photo(object):
+
+	def __init__(self, imgdir, filename, author, preview_dims, width, height, preview_countdown):
+
+		self.imgdir = imgdir
+		self.filename = filename
+		self.full_path = imgdir + filename
+		self.web_path = imgdir.replace('app/','') + filename
+		self.author = author
+		self.imgw = width
+		self.imgh = height
+		self.preview_dimensions = preview_dims
+		self.countdown = preview_countdown
+		self.creation_date = time.strftime('%d-%m-%Y')
+
+		# generate the photo using properties above
+		os.system("raspistill -t " + preview_countdown + " -o " + imgdir + filename + " -w " + \
+		width + " -h " + height + " -p " + preview_dims)
+
+
+
+
+''' This class downloads usernames and GUIDs from TMW's Intranet as a CSV '''
+class UserDataModel(object):
 
 	def __init__(self, url, cachefile, freq):
 		self.url = url
 		self.userfile = cachefile
 		self.freq = freq
 		#self.user = self.UserSession()
-		downloader = self.DataDownloader(url, cachefile, freq)
+		downloader = self.Downloader(url, cachefile, freq)
 		downloader.run()
 		
-	# This gets repeated in the DataDownlader class, I couldn't figure
+	# This gets repeated in the DataDownloader class, I couldn't figure
 	# out how to reference one function from both classes.
 	# Will fix when I know how.
 	def userfile_path(self):
@@ -31,6 +71,7 @@ class UserDataParser(object):
 		users_dict = defaultdict(list)
 		data = open(self.userfile_path(),'r')
 		print "-----> Data opened"
+
 		for line in data.readlines():
 			id, username, fullname = line.split(", ")
 			users_dict[username[:1].lower()].append((username, id, fullname.rstrip())) 
@@ -65,12 +106,12 @@ class UserDataParser(object):
 		# if a username isn't found
 		except IndexError:
 			return False
-			
-		
-    
-	class DataDownloader(object):
+
+
+	class Downloader(object):
 
 		def __init__(self, url, cachefile, freq):
+
 			self.url = url
 			self.cachefile = cachefile
 			self.freq = freq
@@ -93,16 +134,4 @@ class UserDataParser(object):
 			return file
 		
 		def run(self):
-				thr1 = threading.Timer(self.freq, self.update).start()
-				
-
-	class UserSession(object):
-
-		def __init__(self, guid, username, full_name):
-			self.guid = guid
-			self.username = username
-			self.full_name = full_name
-			self.first_name = full_name.split(" ")[0]
-			self.sir_name = full_name.split(" ")[1]
-			self.time = int(time.clock() * 1000) # start of user session
-			print "-----> " + str(self.time)
+				thr1 = threading.Timer(self.freq, self.update).start()			
