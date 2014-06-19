@@ -5,23 +5,6 @@ import urllib2
 from collections import defaultdict
 
 
-''' User object; created when a user logs in '''
-class UserSession(object):
-
-	def __init__(self, guid, username, full_name):
-
-		self.guid = guid
-		self.username = username
-		self.full_name = full_name
-		self.first_name = full_name.split(" ")[0]
-		self.sir_name = full_name.split(" ")[1]
-		self.time = int(time.clock() * 1000) # start of user session
-
-		print "-----> " + str(self.time)
-
-
-
-
 ''' Photo object; created when the camera captures a photo '''
 class Photo(object):
 
@@ -56,6 +39,22 @@ class UserDataModel(object):
 		downloader = self.Downloader(url, cachefile, freq)
 		downloader.run()
 		
+		
+	''' User object; created when a user logs in '''
+	class User(object):
+
+		def __init__(self, guid, username, full_name):
+
+			self.guid = guid
+			self.username = username
+			self.full_name = full_name
+			self.first_name = full_name.split(" ")[0]
+			self.sir_name = full_name.split(" ")[1]
+			self.time = int(time.clock() * 1000) # start of user session
+
+			print "-----> " + str(self.time)
+			
+	
 	# This gets repeated in the DataDownloader class, I couldn't figure
 	# out how to reference one function from both classes.
 	# Will fix when I know how.
@@ -96,11 +95,9 @@ class UserDataModel(object):
 			username = user_list[0]
 			full_name = user_list[2]
 			
-			# create a new user object
-			user = self.UserSession(guid, username, full_name)
-			# add the user to a list of currently active users
+			user = self.User(guid, username, full_name)
+
 			print "user.py -----> username: " + username
-			print "user.py -----> guid: " + guid
 			return user
 
 		# if a username isn't found
@@ -135,8 +132,4 @@ class UserDataModel(object):
 		
 		def run(self):
 				thr1 = threading.Timer(self.freq, self.update).start()
-
-	class Parser(object):
-
-
 				

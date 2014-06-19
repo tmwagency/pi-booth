@@ -10,9 +10,7 @@ RPIO.setup(flash_pin, RPIO.OUT)
 RPIO.output(flash_pin, True) #turn off pin
 
 class CameraController(object):
-	def __init__(self):
-		pass
-		
+	
 	def preview(self, time, dims):
 		print "Previewing image"
 		os.system("raspistill -t " + str(time) + " -p " + dims)
