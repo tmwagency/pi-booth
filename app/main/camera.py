@@ -1,16 +1,15 @@
-import RPIO
+import RPi.GPIO as RPIO
 import sys, os, time
 import config
-import subprocess
-import controller
+from models import Photo
 
 flash_pin = 4
 RPIO.setmode(RPIO.BCM) #set the way GPIO pins are counted
-RPIO.setup(flash_pin, RPIO.OUT)
-RPIO.output(flash_pin, True) #turn off pin
+RPIO.setup(flash_pin, RPIO.OUT, initial=RPIO.HIGH)
+#RPIO.output(flash_pin, True) #turn off pin
 
 class CameraController(object):
-	
+		
 	def preview(self, time, dims):
 		print "Previewing image"
 		os.system("raspistill -t " + str(time) + " -p " + dims)
@@ -29,3 +28,6 @@ class CameraController(object):
 		photo = Photo(config.imgdir, filename, user.username, config.dims, width, height, config.countdown)
 		self.flash_off()
 		return photo
+		
+	def pin_cleanup(self):
+		RPIO.cleanup()

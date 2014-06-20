@@ -2,9 +2,10 @@ import pygame
 
 class WindowView(object):
 	
-	def __init__(self):
+	def __init__(self, caption):
 		pygame.init() 
 
+		self.caption = caption;
 		global count
 		global last_count_time
 
@@ -20,11 +21,11 @@ class WindowView(object):
 		last_count_time = 0
 
 		infoObject = pygame.display.Info()
-	
-	def init(self):
+
 		print ("------------------opening window")
-		window = pygame.display.set_mode((640, 480))
-		pygame.display.set_caption('Hello world!')
+		window = pygame.display.set_mode((1024, 600),pygame.FULLSCREEN)
+		pygame.display.set_caption(caption)
+	
 		
 	'''
 	def loop():

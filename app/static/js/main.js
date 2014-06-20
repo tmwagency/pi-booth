@@ -1,6 +1,17 @@
 $(document).ready(function(){
 	
-	$('#takepic').hide();
+	//Hold lookups in variables to save extra processing
+	var takepic = $('#takepic');
+	var usubmit = $('#usubmit');
+	var homebutton = $('#home-button');
+	var log = $('#log');
+	var messaging = $('#messaging');
+	var uname = $('#uname_data');
+	var instructions = $('#look');
+	var imagecontrols = $('#image-controls');
+	var photo = $('#photo');
+	
+	takepic.hide();
 	
 	    var key = 0;
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + '/photo');
@@ -8,73 +19,100 @@ $(document).ready(function(){
 	    socket.on('event', function(msg) {
 			
 			if (msg.response == '0') {
-				$('#log').html('<p>User ' + msg.name + ' does not exist, please try again.</p>');	
+				
+				log.html('<p>User ' + msg.name + ' does not exist, please try again.</p>');	
+				
 			}
 		
 		else if (msg.response == '1') {
-			$('#messaging').html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
-			$('#log').html('')
-			$('#takepic').fadeIn(800);
-			$('#home-button').show();
-			$('#user_submit').hide();
+			
+			messaging.html('<p class=\"welcome\">Hello ' + msg.name + '</p><p class=\"instructions\">Click the button below to snap a photo.</p>');
+			log.html('')
+			takepic.fadeIn(800);
+			homebutton.show();
+			usubmit.hide();
+			
 		}
 		
 	    });
 	    
+	    
 		socket.on('timeout', function(msg) {
+			
 			if (msg.data == 'timeout') {
-				alert("Timeout, fucker!!");
+				alert("Timeout.");
 			}
 		});
 	
+	
 	    socket.on('image', function(msg) {	
-			$('#look').hide();
-			$('#log').hide();
+			
+			instructions.hide();
+			log.hide();
 			var anticache = new Date().getTime();
-			console.log('anticache run: ' + anticache);
+
 			image_url = msg.data;
-				$('#photo').html('<img src=\"' + msg.data + "?" + anticache + '\" />');
-			$('#image-controls').show();
-			$('#home-button').hide();
+				photo.html('<img src=\"' + msg.data + "?" + anticache + '\" />');
+			imagecontrols.show();
+			homebutton.hide();
 		
 		});
-	    $('#usubmit').click(function(event) {
 		
-	        socket.emit('user', {data: $('#uname_data').val()});
-			$('#uname_data').val(''); 
+		
+	    usubmit.on('click', function(event) {
+			
+			usubmit.off();
+	        socket.emit('user', { data: uname.val() });
+			uname.hide();
+			usubmit.hide();
 			event.preventDefault();
-		
+			
 	    });
-	    $('#takepic').click(function(event) {
+	    
+	    
+	    takepic.on('click', function(event) {
+			
 			socket.emit('take_pic', { data: 'takepic' });
-			$('#takepic').hide();
-			$('#messaging').hide();
-			$('#look').fadeIn();
+			takepic.hide();
+			messaging.hide();
+			instructions.fadeIn();
 			event.preventDefault();
+			
 	    });
+	
 	
 	    $('#try-button').click(function(event) {
-			$('#messaging').fadeIn(800);
-			$('#takepic').fadeIn(800);
-			$('#home-button').fadeIn(800);
-			$('#image-controls').hide();
-			$('#photo').html('');
+			
+			messaging.fadeIn(800);
+			takepic.fadeIn(800);
+			homebutton.fadeIn(800);
+			imagecontrols.hide();
+			photo.html('');
 			event.preventDefault();
+			
 	    });
+	
 	
 	    $('#confirm-button').click(function(event) {
+			
 			socket.emit('send_pic', {data: 'confirm'});
+			
 			$('#send-off').fadeIn(800);
-			$('#home-button').fadeIn(800);
-			$('#image-controls').hide();
-			$('#photo').html('');
+			homebutton.fadeIn(800);
+			imagecontrols.hide();
+			photo.html('');
 			event.preventDefault();
+			
 	    });
 	
-	    $('#home-button').click(function() {
+	
+	    homebutton.click(function() {
+			
 			socket.emit('restart', { data: 'restart' });
 			window.location.replace("/");
 		
 	    });
+	    
+	    
 });
 	

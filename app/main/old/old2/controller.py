@@ -1,3 +1,30 @@
+import RPIO
+import signal
+
+def threaded(f, daemon=False):
+    import Queue
+
+    def wrapped_f(q, *args, **kwargs):
+        #this function calls the decorated function and puts the 
+        #result in a queue
+        ret = f(*args, **kwargs)
+        q.put(ret)
+
+    def wrap(*args, **kwargs):
+        #this is the function returned from the decorator. It fires off
+        #wrapped_f in a new thread and returns the thread object with
+        #the result queue attached
+
+        q = Queue.Queue()
+
+        t = threading.Thread(target=wrapped_f, args=(q,)+args, kwargs=kwargs)
+        t.daemon = daemon
+        t.start()
+        t.result_queue = q        
+        return t
+
+    return wrap
+    
 
 class UserController(object):
 
@@ -62,38 +89,16 @@ class PhotoController(object):
 			print("Error: File not found: " + image_file)
 
 
-def threaded(f, daemon=False):
-    import Queue
 
-    def wrapped_f(q, *args, **kwargs):
-        #this function calls the decorated function and puts the 
-        #result in a queue
-        ret = f(*args, **kwargs)
-        q.put(ret)
-
-    def wrap(*args, **kwargs):
-        #this is the function returned from the decorator. It fires off
-        #wrapped_f in a new thread and returns the thread object with
-        #the result queue attached
-
-        q = Queue.Queue()
-
-        t = threading.Thread(target=wrapped_f, args=(q,)+args, kwargs=kwargs)
-        t.daemon = daemon
-        t.start()
-        t.result_queue = q        
-        return t
-
-    return wrap
    
-class PhysicalInputController(object):
+#class PhysicalInputController(object):
 	
 
 
 
 # This function creates a clean exit on ctrl+c
 def signal_handler(signal, frame):
-	gpio.cleanup()
+	RPIO.cleanup()
 	print '-----> Quit'
 	sys.exit(0)
 	

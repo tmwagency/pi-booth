@@ -119,12 +119,12 @@ class UserDataModel(object):
 		def update(self):
 			
 			data = urllib2.urlopen(self.url)
-
 			with open(self.userfile_path(), 'w') as f: f.write(data.read())
 			print '-----> Users updated and written to ' + self.cachefile
 			thr1 = threading.Timer(self.freq, self.update).start()
 
 		def userfile_path(self):
+			
 			script_dir = os.path.dirname(__file__)
 			rel_path = self.cachefile
 			file = os.path.join(script_dir, rel_path)
