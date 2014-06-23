@@ -9,7 +9,7 @@ import window
 camera = camera.CameraController()
 user_controller = controllers.UserController()
 photo_controller = controllers.PhotoController()
-window = window.WindowView('TMW Photobooth: Profile Photo')
+#window = window.WindowView('TMW Photobooth: Profile Photo')
 
 @socketio.on('user', namespace='/photo')
 def select_user(message):
@@ -30,6 +30,7 @@ def take_pic(msg):
 	user = session['user']
 	filename = user.first_name + "_" + user.sir_name + ".jpg"
 	photo = camera.take_picture(filename,user=user)
+	# start countdown display
 	session['photo'] = photo
 	
 	emit('image', {'data': photo.web_path })
@@ -46,12 +47,13 @@ def send_pic(message):
 
 
 @socketio.on('connect', namespace='/photo')
-def test_connect():
+def client_connect():
     print ('Client connected.')
+    # change interface
 
 
 @socketio.on('disconnect', namespace='/photo')
-def test_disconnect():
+def client_disconnect():
     print('Client disconnected.')
 
 

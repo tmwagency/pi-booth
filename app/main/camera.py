@@ -5,7 +5,9 @@ from models import Photo
 
 flash_pin = 4
 RPIO.setmode(RPIO.BCM) #set the way GPIO pins are counted
+RPIO.setwarnings(False)
 RPIO.setup(flash_pin, RPIO.OUT, initial=RPIO.HIGH)
+
 #RPIO.output(flash_pin, True) #turn off pin
 
 class CameraController(object):
