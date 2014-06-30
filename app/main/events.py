@@ -5,11 +5,12 @@ import config
 import models, controllers, camera 
 import signal, sys
 import window
+import pygame
 
 camera = camera.CameraController()
 user_controller = controllers.UserController()
 photo_controller = controllers.PhotoController()
-#window = window.WindowView('TMW Photobooth: Profile Photo')
+window = window.WindowView('TMW Photobooth: Profile Photo')
 
 @socketio.on('user', namespace='/photo')
 def select_user(message):
@@ -49,8 +50,8 @@ def send_pic(message):
 @socketio.on('connect', namespace='/photo')
 def client_connect():
     print ('Client connected.')
-    # change interface
-
+    '''  evnt = pygame.event.Event(gui.INFOEVENT, type="client_connect")
+    pygame.event.post(evnt)'''
 
 @socketio.on('disconnect', namespace='/photo')
 def client_disconnect():
