@@ -5,6 +5,8 @@ from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, emit
 import threading, Queue
 import time, sys, os, signal
+import model
+
 from collections import defaultdict
 import RPIO as gpio
 
@@ -24,8 +26,8 @@ socketio = SocketIO(app)
 # Instance of class that downloads the list of users from TMW's intranet.
 # It runs continuously on a thread, updating the file at the frequency
 # specified (secs): ('url','localfile',frequency)
-model = UserDataParser(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
-camera = Camera()
+model = UserDataModel.Parser(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
+camera = CameraController()
 
 users = []
 photos = []
@@ -90,17 +92,21 @@ def select_user(message):
 def restart(msg):
 	end_user('end')
 
+
 @socketio.on('take_pic', namespace='/photo')
 def take_pic(msg):
+
 	if len(users) > 0:
 		#created a list to hold the user object globally
 		user = users[0]
 		filename = user.first_name + "_" + user.sir_name + ".jpg"
 		photo = camera.take_picture(filename,user=user)
 		photos.insert(0,photo)
-		print "-----> web_path: " + photo.web_path
+
 		emit('image', {'data': photo.web_path })
+
 	else:
+
 		pass
 		
 
@@ -115,10 +121,12 @@ def send_pic(message):
 	else:
 		pass
 
+
 @socketio.on('connect', namespace='/photo')
 def test_connect():
     print ('Client connected.')
     emit('event', {'data': 'Connected'})
+
 
 @socketio.on('disconnect', namespace='/photo')
 def test_disconnect():
