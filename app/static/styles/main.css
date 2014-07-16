@@ -2,17 +2,38 @@ body {
 	padding: 0;
 	margin: 0;
 	text-align: center;
-	background: rgba(250,250,250,1);
+	background: #313131;
+}
+
+#content {
+	min-height: 400px;
+	margin: 0 auto;
+	padding: 0;
+	position: relative;
 }
 
 h1 {
-	font: 48px sans-serif;
-	color: #bababa;
+	font: 42px sans-serif;
+	color: #fefefe;
+	display: block;
+	margin: 0;
+	padding: 42px 0 42px 0;
+	background: #4ee3c1;
+}
+
+#messaging {
+	padding: 10px;
+	margin: 0;
+}
+
+.second {
+	background: #313131;
+	padding: 20px 0;
 }
 
 p {
 	font: 18px sans-serif;
-	color: #bababa;
+	color: #fefefe;
 }
 #container {
 /*
@@ -24,16 +45,7 @@ p {
 	width: 100%;
 }
 
-#content {
-	min-height: 500px;
-	width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-	background: rgba(255,255,255,0.5);
-	border-radius: 12px;
-	padding: 20px;
-	position: relative;
-}
+
 
 .column {
 	float: left;
@@ -80,6 +92,8 @@ p {
 	text-align: center;
 	font: 28px sans-serif;
 	color: #fff;
+	margin-bottom: 40px;
+	
 }
 
 #send-off, #look, #image-controls {
@@ -105,6 +119,7 @@ p {
 
 .welcome {
 	font: 28px sans-serif;
+	margin: 10px 0;
 }
 
 .instructions {
@@ -117,39 +132,48 @@ p {
 input[type=text],
 input[type=submit],
 input[type=button] {
-	border: 5px solid #fff;
-	border-radius: 12px;
-	padding: 15px;
-	font: 18px sans-serif;
-	background: rgba(150,238,255,1);
-	color: #fff;
+	border: 0;
+	border-radius: 4px;
+	padding: 12px;
+	font: 16px sans-serif;
+	background: #edeee7;
+	color: #313131;
 }
 
 
 *::-webkit-input-placeholder, *::-webkit-input-placeholder:active {
-   color: rgba(255,255,255,0.6);
+   color: #c8c8c8;
 }    
 *:-moz-placeholder, *:-moz-placeholder:active  {
     /* FF 4-18 */
-    color: rgba(255,255,255,0.6);
+    color: #c8c8c8;
 }
 *::-moz-placeholder, *::-moz-placeholder:active  {
     /* FF 19+ */
-    color: rgba(255,255,255,0.6);
+    color: #c8c8c8;
 }    
 *:-ms-input-placeholder, *:-ms-input-placeholder:active   {
     /* IE 10+ */
-    color: rgba(255,255,255,0.6);
+    color: #c8c8c8;
+}
+
+#uname_data {
+	width: 80%;
+	margin-bottom: 14px;
+}
+
+#usubmit {
+	display: block;
+	margin: 0 auto;
+	background: #4ee3c1;
+	color: #fefefe;
+	width: 60%;
 }
 
 #home-button {
 	display: none;
 	width: 180px;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin: 0 auto 20px auto;
+	margin: 40px auto 0 auto;
 }
 
 #try-button {
@@ -161,4 +185,8 @@ input[type=button] {
 #confirm-button {
 	width: 182px;
 	margin: 0 auto 20px auto;
+}
+
+.local #welcome {
+	display: none;
 }

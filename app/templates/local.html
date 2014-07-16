@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style type="text/css">
+
+</style>
+    <title>{{title}}</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.0.min.js') }}"></script>
+    <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/local.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
+    
+<body class="local">
+<h1>TMW Photobooth</h1>
+<div id="container">
+	
+	<div id="content">
+		<div id="welcome">
+			<h1>Hello.</h1> 
+			<p>Please ensure you are connected to the CRE_House network then 
+			visit http://photo.tmw.co.uk on your smartphone to get started.</p>
+			<ul>
+				<li><img src="{{ url_for('static', filename='images/wifi_icon.png') }}">CRE_HOUSE</li>
+				<li><img src="{{ url_for('static', filename='images/url_icon.png') }}">http://photo.tmw.co.uk</li>
+			</ul>
+		</div>
+		
+</div>
+</body>
+</html>
