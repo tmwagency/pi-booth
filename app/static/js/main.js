@@ -13,7 +13,6 @@ $(document).ready(function(){
 	
 	takepic.hide();
 	
-	    var key = 0;
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + '/photo');
 	
 	    socket.on('event', function(msg) {
@@ -44,6 +43,9 @@ $(document).ready(function(){
 			}
 		});
 	
+		socket.on('event', function(event) {	
+			console.log(event.type);
+		});
 	
 	    socket.on('image', function(msg) {	
 			

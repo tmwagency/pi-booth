@@ -1,9 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<style type="text/css">
-
-</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
     <title>{{title}}</title>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.0.min.js') }}"></script>
     <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
@@ -11,20 +9,19 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
     
 <body class="home">
-<h1>TMW Photobooth</h1>
 <div id="container">
-	
+	<h1>TMW Photobooth</h1>
 	<div id="content">
 		<div id="image-controls">
 			<input type="button" name="try-button" id="try-button" value="Try again">
 			<input type="button" name="confirm-button" id="confirm-button" value="Use this">
 		</div>
-		<div id="messaging"><p>Please enter your username below</p></div>
+		<div class="second"><p id="messaging">Please enter your TMW username</p>
 	        <form id="user_submit">
 	        	<input type="text" name="uname" id="uname_data" placeholder="Username">
-	        	<input type="submit" name="usubmit" id="usubmit">
+	        	<input type="submit" name="usubmit" id="usubmit" value="Log in">
 	        </form>
-	    
+	    </div>
 		<div id="log"></div>
 		<div id="photo"></div>
 		<div id="send-off"><p>Go check your email!</p></div>

@@ -3,14 +3,20 @@ from flask.ext.socketio import SocketIO, emit
 from .. import socketio
 import config
 import models, controllers, camera 
-import signal, sys
+import signal, sys, subprocess
 import window
-import pygame
 
+'''
+browser = '/usr/bin/midori'
+browser_args ='-e Fullscreen -a /home/pi/pi-booth/app/local/index.html'
+subprocess.Popen(browser+''+browser_args)
+'''
+subprocess.Popen('/usr/bin/midori -a http://localhost/local', shell=True)
+'''subprocess.Popen('/usr/bin/midori -e Fullscreen -a http://localhost/local', shell=True)'''
 camera = camera.CameraController()
 user_controller = controllers.UserController()
 photo_controller = controllers.PhotoController()
-window = window.WindowView('TMW Photobooth: Profile Photo')
+
 
 @socketio.on('user', namespace='/photo')
 def select_user(message):
@@ -46,12 +52,14 @@ def send_pic(message):
 	''' End user session '''
 	session.clear()
 
+@socketio.on('connect', namespace='/local')
+def client_connect():
+    print ('Local client connected.')
 
 @socketio.on('connect', namespace='/photo')
 def client_connect():
     print ('Client connected.')
-    '''  evnt = pygame.event.Event(gui.INFOEVENT, type="client_connect")
-    pygame.event.post(evnt)'''
+	#emit('event', { 'type': 'client_connect' }, namespace='/local')
 
 @socketio.on('disconnect', namespace='/photo')
 def client_disconnect():

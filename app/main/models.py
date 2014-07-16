@@ -82,7 +82,9 @@ class UserDataModel(object):
 
 	def get_user(self, input_var):
 		# make user input lower case
-		input_var_key = input_var[:1].lower()
+		input_var = input_var.lower()
+		input_var_key = input_var[:1]
+		
 		# a code to indicate successful resolution of user to front end script
 		#code = 0
 		users_dict = self.make_user_dict(self.userfile)
