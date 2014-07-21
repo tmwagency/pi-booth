@@ -1,5 +1,5 @@
 import config, models
-import os, subprocess
+import os, subprocess, time
 from flask import session
 
 model = models.UserDataModel(config.user_file_url,config.local_cache_file,config.cache_refresh_rate)
@@ -32,13 +32,14 @@ class PhotoController(object):
 
 		if os.path.isfile(image_file):
 			
-			print("Sending photo...\n------------------------------------------")
+			print("Sending photo...")
 
-			subprocess.call("curl -s -L -u tmwcolin:waitalittle -F \"photo=@/home/pi/pi-booth/" + \
+			p = subprocess.Popen("curl -s -L -u tmwcolin:waitalittle -F \"photo=@/home/pi/pi-booth/" + \
 			image_file + ";type=application/octet-stream;\" -F \"guid=" + \
-			str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php", shell=True)
-			
-			print("\n------------------------------------------")
+			str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php", shell=True, stdout=subprocess.PIPE).communicate()[0]
+			if 'sentok' in p:
+				print 'Image sent'
+				os.remove('/home/pi/pi-booth/' + image_file)
 			
 		else:
 			print("Error: File not found: " + image_file)
