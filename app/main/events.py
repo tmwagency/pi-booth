@@ -18,6 +18,7 @@ user_controller = controllers.UserController()
 photo_controller = controllers.PhotoController()
 
 
+
 @socketio.on('user', namespace='/photo')
 def select_user(message):
 
@@ -53,13 +54,13 @@ def send_pic(message):
 	session.clear()
 
 @socketio.on('connect', namespace='/local')
-def client_connect():
+def local_client_connect():
     print ('Local client connected.')
 
 @socketio.on('connect', namespace='/photo')
 def client_connect():
     print ('Client connected.')
-	#emit('event', { 'type': 'client_connect' }, namespace='/local')
+    #emit('event', { 'type': 'client_connect' }, namespace='/local')
 
 @socketio.on('disconnect', namespace='/photo')
 def client_disconnect():

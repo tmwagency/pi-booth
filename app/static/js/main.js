@@ -10,6 +10,7 @@ $(document).ready(function(){
 	var instructions = $('#look');
 	var imagecontrols = $('#image-controls');
 	var photo = $('#photo');
+	var second = $('#second');
 	
 	takepic.hide();
 	
@@ -35,13 +36,6 @@ $(document).ready(function(){
 		
 	    });
 	    
-	    
-		socket.on('timeout', function(msg) {
-			
-			if (msg.data == 'timeout') {
-				alert("Timeout.");
-			}
-		});
 	
 		socket.on('event', function(event) {	
 			console.log(event.type);
@@ -54,20 +48,28 @@ $(document).ready(function(){
 			var anticache = new Date().getTime();
 
 			image_url = msg.data;
-				photo.html('<img src=\"' + msg.data + "?" + anticache + '\" />');
+			photo.show();
+			photo.html('<img src=\"' + msg.data + "?" + anticache + '\" />');
 			imagecontrols.show();
 			homebutton.hide();
+			second.hide();
 		
 		});
 		
 		
 	    usubmit.on('click', function(event) {
+			var username = uname.val()
 			
-			usubmit.off();
-	        socket.emit('user', { data: uname.val() });
-			uname.hide();
-			usubmit.hide();
-			event.preventDefault();
+			if (username !== '') {
+				usubmit.off();
+				socket.emit('user', { data: uname.val() });
+				uname.hide();
+				usubmit.hide();
+				event.preventDefault();
+			}
+			else {
+				event.preventDefault();
+			}
 			
 	    });
 	    
@@ -78,6 +80,7 @@ $(document).ready(function(){
 			takepic.hide();
 			messaging.hide();
 			instructions.fadeIn();
+			homebutton.hide();
 			event.preventDefault();
 			
 	    });
@@ -88,6 +91,8 @@ $(document).ready(function(){
 			messaging.fadeIn(800);
 			takepic.fadeIn(800);
 			homebutton.fadeIn(800);
+			second.fadeIn(800);
+			photo.hide();
 			imagecontrols.hide();
 			photo.html('');
 			event.preventDefault();

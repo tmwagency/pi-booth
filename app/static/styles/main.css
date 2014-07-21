@@ -1,3 +1,7 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+@import url(http://fonts.googleapis.com/css?family=Lato);
+
+
 body {
 	padding: 0;
 	margin: 0;
@@ -13,26 +17,31 @@ body {
 }
 
 h1 {
-	font: 42px sans-serif;
+
+	font: 42px 'Oswald', sans-serif;
 	color: #fefefe;
 	display: block;
-	margin: 0;
-	padding: 42px 0 42px 0;
+	margin: 0 0 20px 0;
+	padding: 12px 0 12px 0;
 	background: #4ee3c1;
 }
 
 #messaging {
-	padding: 10px;
+	padding: 0;
 	margin: 0;
 }
 
-.second {
+#messaging p {
+	margin: 4px;
+}
+
+#second {
 	background: #313131;
 	padding: 20px 0;
 }
 
 p {
-	font: 18px sans-serif;
+	font: 16px 'Lato', sans-serif;
 	color: #fefefe;
 }
 #container {
@@ -65,7 +74,7 @@ p {
 }
 .row {
 	padding: 4px 20px;
-	border-top: 1px solid #fff;
+	-top: 1px solid #fff;
 }
 
 #log {
@@ -78,7 +87,7 @@ p {
 	border-radius: 50%;
 	width: 200px;
 	height: 200px;
-	background: rgba(150,238,255,1);
+	background: #4ee3c1;
 	border: 5px solid #fff;
 	margin: 0 auto;
 	overflow: hidden;
@@ -102,10 +111,13 @@ p {
 
 #photo {
 	margin-bottom: 20px;
+	width: 100%;
+	display: none;
 }
 
 #photo img {
-	width: 380px;
+	max-width: 100%;
+	max-height: 300px;
 }
 
 
@@ -122,11 +134,7 @@ p {
 	margin: 10px 0;
 }
 
-.instructions {
 
-	font: 18px sans-serif;
-
-}
 /* -------- Form Elements -------- */
 
 input[type=text],
@@ -159,7 +167,7 @@ input[type=button] {
 
 #uname_data {
 	width: 80%;
-	margin-bottom: 14px;
+	margin-bottom: 28px;
 }
 
 #usubmit {
@@ -177,16 +185,56 @@ input[type=button] {
 }
 
 #try-button {
-	width: 182px;
+	width: 150px;
 
 	margin: 0 10px 20px 0;
 }
 
 #confirm-button {
-	width: 182px;
+	width: 150px;
 	margin: 0 auto 20px auto;
 }
 
 .local #welcome {
-	display: none;
+
+}
+.local #content {
+	margin: 0 auto;
+	padding: 0;
+}
+.local #second {
+	background: #fff;
+}
+
+.local h1 {
+	margin: 0;
+}
+
+.local {
+	background: #313131;
+}
+.local p {
+	font: 22px 'Lato', sans-serif;
+	color: #888;
+}
+
+.local ul {
+	list-style-type: none;
+	text-align: left;
+	margin-left: 80px;
+	margin-top: 50px;
+}
+.local ul li img {
+	position: absolute;
+}
+
+.local ul li p {
+	color: #ccc;
+	margin: 10px 0 50px 90px;
+	padding-top: 24px;
+}
+
+
+.image-controls {
+	margin-top: 20px;
 }

@@ -11,17 +11,18 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
     
 <body class="local">
-<h1>TMW Photobooth</h1>
 <div id="container">
 	
 	<div id="content">
 		<div id="welcome">
-			<h1>Hello.</h1> 
-			<p>Please ensure you are connected to the CRE_House network then 
-			visit http://photo.tmw.co.uk on your smartphone to get started.</p>
+			<h1>TMW Photobooth</h1>
+			<div id="second">
+				<p>Please ensure your smartphone is connected to the CRE_House WiFi network then 
+				visit <strong>http://photo.tmw.co.uk</strong> to get started.</p>
+			</div>
 			<ul>
-				<li><img src="{{ url_for('static', filename='images/wifi_icon.png') }}">CRE_HOUSE</li>
-				<li><img src="{{ url_for('static', filename='images/url_icon.png') }}">http://photo.tmw.co.uk</li>
+				<li><img src="{{ url_for('static', filename='images/wifi_icon.png') }}"><p>SSID: CRE_HOUSE<br>Pword: Tog3th$r</p></li>
+				<li><img src="{{ url_for('static', filename='images/url_icon.png') }}"><p>http://photo.tmw.co.uk</p></li>
 			</ul>
 		</div>
 		
