@@ -77,11 +77,6 @@ p {
 	-top: 1px solid #fff;
 }
 
-#log {
-	width: 400px;
-	font: 32px sans-serif;
-	color: #bababa;
-}
 
 #takepic {
 	border-radius: 50%;
@@ -195,8 +190,8 @@ input[type=button] {
 	margin: 0 auto 20px auto;
 }
 
-.local #welcome {
-
+.local .welcome {
+	//display: none;
 }
 .local #content {
 	margin: 0 auto;

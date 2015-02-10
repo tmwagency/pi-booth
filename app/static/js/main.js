@@ -20,8 +20,10 @@ $(document).ready(function(){
 			
 			if (msg.response == '0') {
 				
-				log.html('<p>User ' + msg.name + ' does not exist, please try again.</p>');	
-				
+				log.text('User \"' + msg.name + '\" does not exist, please try again.');	
+				uname.val('');
+				uname.hide();
+				usubmit.hide();
 			}
 		
 		else if (msg.response == '1') {
@@ -30,6 +32,7 @@ $(document).ready(function(){
 			log.html('')
 			takepic.fadeIn(800);
 			homebutton.show();
+			uname.hide();
 			usubmit.hide();
 			
 		}
@@ -38,7 +41,7 @@ $(document).ready(function(){
 	    
 	
 		socket.on('event', function(event) {	
-			console.log(event.type);
+			console.log(event);
 		});
 	
 	    socket.on('image', function(msg) {	
@@ -63,8 +66,6 @@ $(document).ready(function(){
 			if (username !== '') {
 				usubmit.off();
 				socket.emit('user', { data: uname.val() });
-				uname.hide();
-				usubmit.hide();
 				event.preventDefault();
 			}
 			else {

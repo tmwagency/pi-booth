@@ -1,14 +1,19 @@
 $(document).ready(function(){
-	
+	//$('.log').append("Logging works");
+
 	//Hold lookups in variables to save extra processing
-	var welcome = $('#welcome');
+	var welcome = $('.welcome');
 	var socket = io.connect('http://' + document.domain + ':' + location.port + '/local');
-	    
-	socket.on('event', function(event) {	
-		if (event.type == 'client_connect') {
-			welcome.show()
-		}
+	console.log(socket);
+	
+	
+	socket.on('connect', function(socket) {
+		console.log("Socket connected");
 	});
-	    
+	
+	socket.on('event', function(event) {	
+		console.log(event.type);
+	});
+
 });
 	

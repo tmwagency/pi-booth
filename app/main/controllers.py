@@ -12,10 +12,12 @@ class UserController(object):
 
 		if not user:
 			response = { 'code': 0, 'guid': 0, 'name': user_input }
+			print('User ' + user_input + ' not found.')
 			
 		else:
 			response = { 'code': 1, 'guid': user.guid, 'name': user.first_name }
 			session['user'] = user
+			print(session['user'])
 		
 		return response
 
@@ -39,7 +41,8 @@ class PhotoController(object):
 			str(uid) + "\" http://gps.tmw.co.uk/ajax/photobooth.php", shell=True, stdout=subprocess.PIPE).communicate()[0]
 			if 'sentok' in p:
 				print 'Image sent'
-				os.remove('/home/pi/pi-booth/' + image_file)
+				#os.remove('/home/pi/pi-booth/' + image_file)
+				#os.remove('/home/pi/pi-booth/' + thumb_file)
 			
 		else:
 			print("Error: File not found: " + image_file)
